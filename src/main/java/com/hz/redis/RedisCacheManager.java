@@ -1,11 +1,8 @@
-package com.hz.shiro;
+package com.hz.redis;
 
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
-
-import java.util.Collection;
-import java.util.Set;
 
 //自定义shiro缓存管理器
 public class RedisCacheManager implements CacheManager {

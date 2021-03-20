@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hz.controller.UserController;
+import com.hz.utils.ApplicationContextUtils;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,16 +44,26 @@ public class JWTInterceptor  implements HandlerInterceptor {
         if (token!=null){
             try {
                 //JWTUtils.verify(token);
-                Claims claims = jwtUtil.parseJWT(token);
-                String id = claims.getId();
-                logger.info(id);
 
-                logger.info("11",claims);
-                request.setAttribute("claims",claims);
-                //jsonObject.put("token",token);
-                //jsonObject.put("state",true);
-                //jsonObject.put("msg","请求成功");
-                return true;
+                RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
+                Object o = redisTemplate.opsForHash().get(token, "");
+                if (o==null){
+                    jsonObject.put("token","无效参数");
+                    jsonObject.put("state",false);
+                    jsonObject.put("msg","参数错误，token已过期");
+                }else {
+
+                    Claims claims = jwtUtil.parseJWT(token);
+                    String id = claims.getId();
+                    logger.info(id);
+
+                    logger.info("11",claims);
+                    request.setAttribute("claims",claims);
+                    //jsonObject.put("token",token);
+                    //jsonObject.put("state",true);
+                    //jsonObject.put("msg","请求成功");
+                    return true;
+                }
             } catch (StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
                 jsonObject.put("token",token);

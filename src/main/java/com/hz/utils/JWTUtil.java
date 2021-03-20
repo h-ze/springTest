@@ -6,9 +6,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class JWTUtil {
@@ -40,7 +42,14 @@ public class JWTUtil {
                 .claim("password",password)
                 .claim("roles",roles)
                 ;
-        return builder.compact();
+        RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
+        String compact = builder.compact();
+        redisTemplate.opsForHash().put(compact,"","");
+        System.out.println(compact);
+        redisTemplate.expire(compact, 60, TimeUnit.SECONDS);
+        Boolean aBoolean = redisTemplate.hasKey(compact);
+        System.out.println(aBoolean);
+        return compact;
     }
 
     public static Claims parseJWT(String jwtStr){

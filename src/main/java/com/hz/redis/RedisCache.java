@@ -1,4 +1,4 @@
-package com.hz.shiro;
+package com.hz.redis;
 
 import com.hz.utils.ApplicationContextUtils;
 import org.apache.shiro.cache.Cache;
@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 //自定义redis缓存的实现
