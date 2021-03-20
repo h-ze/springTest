@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ExcpetionController {
+public class ExceptionController {
 
     @ResponseBody
     @ExceptionHandler
