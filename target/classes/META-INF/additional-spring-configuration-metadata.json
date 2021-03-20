@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "logging.leve.com.hz.dao",
+      "type": "java.lang.String",
+      "description": "Description for logging.leve.com.hz.dao."
+    },
+    {
+      "name": "logging.leve.com.hz.dao",
+      "type": "java.lang.String",
+      "description": "Description for logging.leve.com.hz.dao."
+    }
+  ] }

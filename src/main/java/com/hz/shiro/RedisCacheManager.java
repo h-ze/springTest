@@ -1,0 +1,17 @@
+package com.hz.shiro;
+
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheException;
+import org.apache.shiro.cache.CacheManager;
+
+import java.util.Collection;
+import java.util.Set;
+
+//自定义shiro缓存管理器
+public class RedisCacheManager implements CacheManager {
+    @Override
+    public <K, V> Cache<K, V> getCache(String s) throws CacheException {
+        System.out.println("缓存："+s);
+        return new RedisCache<K,V>(s);
+    }
+}
