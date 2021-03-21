@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@Api(tags = "swagger管理相关接口")
+@Api(tags = "swagger user接口")
+//springboot swagger访问地址 http://localhost:8081/springboot/swagger-ui.html
 @RequestMapping("/swagger")
 public class SwaggerController {
 

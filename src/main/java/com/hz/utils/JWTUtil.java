@@ -4,10 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +42,10 @@ public class JWTUtil {
                 .claim("roles",roles)
                 ;
         RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         String compact = builder.compact();
-        redisTemplate.opsForHash().put(compact,"","");
+        redisTemplate.opsForValue().set(compact,compact);
         System.out.println(compact);
         redisTemplate.expire(compact, 60, TimeUnit.SECONDS);
         Boolean aBoolean = redisTemplate.hasKey(compact);

@@ -2,11 +2,14 @@ package com.hz.config;
 
 import com.hz.redis.RedisCacheManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,7 @@ import java.util.Map;
 /**
  * 用来整合shiro框架相关的配置项
  */
-//@Configuration
+@Configuration
 public class ShiroConfig {
 
     //1.创建shiroFilter
@@ -42,6 +45,13 @@ public class ShiroConfig {
     public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("getRealm") Realm realm){
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         defaultWebSecurityManager.setRealm(realm);
+
+        //关闭shiro自带的session
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        defaultWebSecurityManager.setSubjectDAO(subjectDAO);
         return defaultWebSecurityManager;
     }
 
@@ -67,6 +77,11 @@ public class ShiroConfig {
         shiroCustomerRealm.setAuthorizationCacheName("authorizationCache");
 
         return shiroCustomerRealm;
+    }
+
+    @Bean
+    public void closeSession(){
+
     }
 
 }

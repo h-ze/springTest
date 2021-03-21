@@ -3,6 +3,8 @@ package com.hz.redis;
 import com.hz.utils.ApplicationContextUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -11,6 +13,8 @@ import java.util.Set;
 
 //自定义redis缓存的实现
 public class RedisCache<K,V> implements Cache<K,V> {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisCache.class);
 
     private String cacheName;
 
@@ -31,18 +35,19 @@ public class RedisCache<K,V> implements Cache<K,V> {
 
     @Override
     public V get(K k) throws CacheException {
-        System.out.println("get key"+k);
+        logger.info("get key:"+k);
         //RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
         //redisTemplate.setKeySerializer(new StringRedisSerializer());
         //redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         V v = (V) getRedisTemplate().opsForHash().get(this.cacheName,k.toString());
+        logger.info("v:",v);
         return v;
     }
 
     @Override
     public V put(K k, V v) throws CacheException {
-        System.out.println("k:"+k);
-        System.out.println("v:"+v);
+        logger.info("k:"+k);
+        logger.info("v:"+v);
         //RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
         //redisTemplate.setKeySerializer(new StringRedisSerializer());
         //redisTemplate.setHashKeySerializer(new StringRedisSerializer());

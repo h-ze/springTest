@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 /**
  * shiro的测试类
  */
-public class Shiro {
+public class ShiroTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(Shiro.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShiroTest.class);
 
     public static void main(String[] args) {
         //1.创建安全管理器对象
@@ -38,8 +38,9 @@ public class Shiro {
         //4.关键对象subject主体
         Subject subject = SecurityUtils.getSubject();
 
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("heze","123");
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("test","123");
 
+        subject.login(usernamePasswordToken);
         try {
             System.out.println("认证状态："+subject.isAuthenticated());
             subject.login(usernamePasswordToken);

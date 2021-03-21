@@ -1,23 +1,17 @@
 package com.hz.controller;
 
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.hz.entity.ConvertResult;
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.JWTUtils;
 import com.hz.utils.SaltUtil;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Controller
-//@Api(tags = "swagger用户管理相关接口")
+@Api(tags = "swagger 用户管理接口")
 @RequestMapping("/user")
 public class UserController {
 
@@ -48,12 +41,7 @@ public class UserController {
         model.addAttribute("users", all);
         logger.info("info信息");
         return "showALl";
-
-
     }
-    /*public List<User> getAll(){
-        return userService.findAll();
-    }*/
 
     @GetMapping("/save")
     //@ResponseBody
@@ -73,7 +61,7 @@ public class UserController {
         }else {
             User addUser = new User();
             addUser.setName(username);
-            Map<String, String> result = SaltUtil.getResult(password);
+            Map<String, String> result = SaltUtil.shiroSalt(password);
             addUser.setSalt(result.get("salt"));
             addUser.setPassword(result.get("password"));
             addUser.setBir(new Date());
@@ -89,9 +77,6 @@ public class UserController {
             }
         }
     }
-
-
-
 
     @GetMapping("findAllJsp")
     public String findAllJsp(HttpServletRequest request, Model model){
@@ -124,12 +109,59 @@ public class UserController {
 
     //使用shiro
     @PostMapping("loginByShiro")
-    public String loginByShiro(String username, String password, HttpSession session){
+    @ResponseBody
+    public ConvertResult loginByShiro(String username, String password){
         System.out.println(username);
         System.out.println(password);
+
+        /*DefaultSecurityManager securityManager = new DefaultSecurityManager();
+        //2.给安全管理器设置realm
+        ShiroCustomerRealm myCusttomer = new ShiroCustomerRealm();
+
+        //对值进行hash及加密方式以及散列次数
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("md5");
+        hashedCredentialsMatcher.setHashIterations(1024);
+
+        myCusttomer.setCredentialsMatcher(hashedCredentialsMatcher);
+        //securityManager.setRealm(new IniRealm("classpath:shiro.ini"));
+        securityManager.setRealm(myCusttomer);
+
+        //3.SecurityUtils 给全局安全工具类设置安全管理器
+        SecurityUtils.setSecurityManager(securityManager);*/
+
+        //4.关键对象subject主体
+        /*Subject subject = SecurityUtils.getSubject();
+
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username,password);
+
+        try {
+            System.out.println("认证状态："+subject.isAuthenticated());
+            subject.login(usernamePasswordToken);
+            System.out.println("认证状态："+subject.isAuthenticated());
+            System.out.println(usernamePasswordToken);
+        }catch (UnknownAccountException e){
+            e.printStackTrace();
+            System.out.println("用户名不存在");
+        }catch (IncorrectCredentialsException e){
+            e.printStackTrace();
+            System.out.println("密码错误");
+        }
+
+        if(subject.isAuthenticated()){
+            //1.基于角色权限控制
+            boolean admin = subject.hasRole("admin");
+            System.out.println("管理员"+admin);
+            //logger.info(admin);
+            System.out.println("权限"+subject.isPermitted("user:update"));
+
+        }*/
+
+        return new ConvertResult(0,"登录成功","获取用户信息成功");
+
         //User user = userService.getUser(username);
 
-        Subject subject = SecurityUtils.getSubject();
+        /*Subject subject = SecurityUtils.getSubject();
 
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username,password);
 
@@ -157,7 +189,7 @@ public class UserController {
             return "redirect:/file/showAllFile";
         }else {
             return "redirect:/index/login";
-        }
+        }*/
 
 //        if (user.getPassword().equals(password)){
 //            session.setAttribute("user",user);
@@ -167,6 +199,12 @@ public class UserController {
 //        }
     }
 
+    /**
+     * 使用jwt
+     * @param username 用户名
+     * @param password 密码
+     * @return ConvertResult对象
+     */
     @PostMapping(value = "/login")
     @ResponseBody
     public ConvertResult login(@RequestParam("username") String username , @RequestParam("password") String password){
@@ -174,11 +212,11 @@ public class UserController {
         logger.info(password);
         User user = userService.getUser(username);
         if (user!=null){
-            String sha = SaltUtil.sha(password + user.getSalt());
+            String sha = SaltUtil.shiroSha(password ,user.getSalt());
             logger.info(sha);
             if (sha.equals(user.getPassword())){
                 String token = jwtUtil.createJWT(user.getId().toString(),
-                        user.getName(),user.getPassword(), user.getSalt());
+                        user.getName(),password/*user.getPassword()*/, user.getSalt());
                 logger.info(token);
                 return new ConvertResult(0,"登录成功",token);
             }else {
@@ -196,13 +234,13 @@ public class UserController {
         return "";
     }
 
+
     @PostMapping("getToken")
     @ApiOperation(value ="用户登录",notes="获取用户的token")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username",  dataType = "String",value = "用户名", defaultValue = "张三"),
             @ApiImplicitParam(name = "password", value = "用户密码", defaultValue = "123456", required = true)
     })
-    //@GetMapping("getToken")
     public Map<String,Object> getToken(String username, String password){
         System.out.println(username);
         System.out.println(password);
@@ -233,12 +271,12 @@ public class UserController {
 
     @GetMapping(value = "testRoles")
     @ResponseBody
-    public String testRoles(HttpServletRequest request){
+    public ConvertResult testRoles(HttpServletRequest request){
         Claims calms = (Claims)request.getAttribute("claims");
         Object roles = calms.get("roles");
         logger.info("roles",roles);
         logger.info(calms.toString());
-        return "success";
+        return new ConvertResult(0,"测试权限","权限测试成功");
 
     }
 

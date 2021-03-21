@@ -1,5 +1,7 @@
 package com.hz.utils;
 
+import org.apache.shiro.crypto.hash.Md5Hash;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -29,6 +31,12 @@ public class SaltUtil {
         return sha.toString(32);
     }
 
+    public static String shiroSha(String s,String salt)
+    {
+        Md5Hash md5Hash = new Md5Hash(s,salt,1024);
+        return md5Hash.toHex();
+    }
+
     /**
      * 字符串+随机盐 sha加密
      * @param s 要加密的字符串
@@ -40,6 +48,17 @@ public class SaltUtil {
         map.put("salt", salt);//盐
         map.put("password", sha(s+salt));//加密后的密码
         return map;
+    }
+
+    public static Map<String,String>  shiroSalt(String s){
+        Map<String,String> map=new HashMap<String,String>();
+        Md5Hash md5Hash = new Md5Hash(s,"123",1024);
+        System.out.println(md5Hash.toHex());
+        String salt=getSalt();
+        map.put("salt", "123");//盐
+        map.put("password", md5Hash.toHex());//加密后的密码
+        return map;
+        //return md5Hash.toHex();
     }
 
     /**

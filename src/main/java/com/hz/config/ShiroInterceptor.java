@@ -1,25 +1,28 @@
 package com.hz.config;
 
-import com.hz.interceptors.JWTInterceptor;
+import com.hz.interceptors.ShiroInterceptorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * JWT拦截器
+ * 拦截器 加上@configuration会自动生效
+ * shiro拦截器
  */
-//@Configuration
-public class JWTInterceptors implements WebMvcConfigurer {
+@Configuration
+public class ShiroInterceptor implements WebMvcConfigurer {
 
-    //
     @Bean
-    public JWTInterceptor getJWTInterceptor(){
-        return new JWTInterceptor();
+    public ShiroInterceptorConfig getMyInterceptor(){
+        return new ShiroInterceptorConfig();
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getJWTInterceptor())
+        //super.addInterceptors(registry);
+        registry.addInterceptor(getMyInterceptor())
+                //.addPathPatterns("/file/**") //添加拦截的请求路径
+                //.excludePathPatterns(""); //添加排除哪些请求路径不经过拦截器
                 .addPathPatterns("/**") //所有的接口都验证
                 .excludePathPatterns("/swagger-resources/**") //以下三个配置是拦截器放过的
                 .excludePathPatterns("/swagger-ui.html/**")
