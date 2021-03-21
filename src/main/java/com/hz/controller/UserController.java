@@ -282,4 +282,18 @@ public class UserController {
 
     }
 
+    @GetMapping(value = "testRoles1")
+    //@RequiresPermissions("")
+    @ResponseBody
+    public ConvertResult testRoles1(HttpServletRequest request){
+        //Claims calms = (Claims)request.getAttribute("claims");
+//        Object roles = calms.get("roles");
+        //logger.info("roles",roles);
+        //logger.info(calms.toString());
+        //User user = userService.getUser("test");
+
+        return new ConvertResult(0,"测试权限1","权限测试成功");
+
+    }
+
 }

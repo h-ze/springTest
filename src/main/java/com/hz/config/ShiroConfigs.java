@@ -1,5 +1,6 @@
 package com.hz.config;
 
+import com.hz.config.filter.JWTFilter;
 import com.oracle.tools.packager.Log;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -57,28 +58,29 @@ public class ShiroConfigs {
     //1.创建shiroFilter  定义这个之后工厂会直接进到这个类里 拦截所有请求
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(SecurityManager securityManager){
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         logger.info("==================");
+
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new LinkedHashMap<>();
         //设置我们自定义的JWT过滤器
-        //filterMap.put("jwt", new JWTFilter());
+        filterMap.put("jwt", new JWTFilter());
 
         //给filter设置安全管理器
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        //shiroFilterFactoryBean.setFilters(filterMap);
+        shiroFilterFactoryBean.setFilters(filterMap);
 
         //配置系统的受限资源
         
         //配置系统公共资源
         Map<String, String> map = new HashMap<String,String>();
         //map.put("/user/login","anon");
-        //map.put("/index","authc");//authc 请求这个资源需要认证和授权
+        map.put("/**","authc");//authc 请求这个资源需要认证和授权
 
         //默认认证界面路径
-        //shiroFilterFactoryBean.setLoginUrl("/login");
-        //shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+        shiroFilterFactoryBean.setLoginUrl("/user/testRoles1");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         logger.info("测试");
         return shiroFilterFactoryBean;
 
