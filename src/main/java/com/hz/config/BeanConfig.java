@@ -8,7 +8,7 @@ import java.util.Calendar;
 @Configuration
 public class BeanConfig {
 
-    @Scope("prototype") //prototype 多例 singleton 单例
+    @Scope("prototype") //prototype 原型 singleton 单例
     public Calendar getCalendar(){
         return Calendar.getInstance();
     }

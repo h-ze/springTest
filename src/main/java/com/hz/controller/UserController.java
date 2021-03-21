@@ -6,7 +6,6 @@ import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.JWTUtils;
 import com.hz.utils.SaltUtil;
-import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -270,12 +269,15 @@ public class UserController {
     }
 
     @GetMapping(value = "testRoles")
+    //@RequiresPermissions("")
     @ResponseBody
     public ConvertResult testRoles(HttpServletRequest request){
-        Claims calms = (Claims)request.getAttribute("claims");
-        Object roles = calms.get("roles");
-        logger.info("roles",roles);
-        logger.info(calms.toString());
+        //Claims calms = (Claims)request.getAttribute("claims");
+//        Object roles = calms.get("roles");
+        //logger.info("roles",roles);
+        //logger.info(calms.toString());
+        //User user = userService.getUser("test");
+
         return new ConvertResult(0,"测试权限","权限测试成功");
 
     }

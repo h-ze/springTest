@@ -2,7 +2,6 @@ package com.hz.config;
 
 import com.hz.interceptors.ShiroInterceptorConfig;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -10,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 拦截器 加上@configuration会自动生效
  * shiro拦截器
  */
-@Configuration
+//@Configuration
 public class ShiroInterceptor implements WebMvcConfigurer {
 
     @Bean
