@@ -1,7 +1,7 @@
 package com.hz.config;
 
 import com.hz.config.filter.JWTFilter;
-import com.oracle.tools.packager.Log;
+import com.hz.config.realm.ShiroCustomerRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -25,10 +25,10 @@ import java.util.Map;
  * shiro的filter
  */
 @Configuration
-public class ShiroConfigs {
+public class ShiroConfig {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(ShiroConfigs.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
 
     /**
      * 添加注解支持
@@ -76,8 +76,8 @@ public class ShiroConfigs {
         //配置系统公共资源
         Map<String, String> map = new HashMap<String,String>();
         //map.put("/user/login","anon");
-        map.put("/**","authc");//authc 请求这个资源需要认证和授权
-
+        map.put("/**","jwt");
+        //map.put("/**","authc");//authc 请求这个资源需要认证和授权
         //默认认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/user/testRoles1");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
@@ -88,7 +88,7 @@ public class ShiroConfigs {
     //2.创建安全管理器
     @Bean
     public SecurityManager getSecurityManager( Realm realm){
-        Log.debug("test");
+        logger.debug("test");
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(realm);
 
@@ -105,7 +105,7 @@ public class ShiroConfigs {
     @Bean
     //@Qualifier("getRealm")
     public Realm getRealm(){
-        Log.info("getRema");
+        logger.info("getRealm");
         ShiroCustomerRealm shiroCustomerRealm = new ShiroCustomerRealm();
         //修改凭证校验匹配器
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();

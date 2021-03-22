@@ -1,4 +1,4 @@
-package com.hz.config;
+package com.hz.interceptors;
 
 import com.hz.interceptors.ShiroInterceptorConfig;
 import org.springframework.context.annotation.Bean;

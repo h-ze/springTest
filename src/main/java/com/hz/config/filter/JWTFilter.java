@@ -1,10 +1,18 @@
 package com.hz.config.filter;
 
-import com.hz.config.ShiroConfigs;
+import com.alibaba.fastjson.JSONObject;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.hz.config.ShiroConfig;
+import com.hz.utils.JWTToken;
+import com.hz.utils.JWTUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.MalformedJwtException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -17,8 +25,10 @@ import java.net.URLEncoder;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
     //private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final Logger logger = LoggerFactory.getLogger(ShiroConfigs.class);
+    private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
+    @Autowired
+    private JWTUtil jwtUtil;
     /**
      * 如果带有 token，则对 token 进行检查，否则直接通过
      */
@@ -34,7 +44,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             } catch (Exception e) {
                 //token 错误
                 responseError(response, e.getMessage());
+                return false;
             }
+        } else {
+            logger.info("token为空");
         }
         logger.info("请求进来");
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
@@ -48,7 +61,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
-        String token = req.getHeader("Token");
+        String token = req.getParameter("token");
         return token != null;
     }
 
@@ -56,14 +69,12 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 执行登陆操作
      */
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response){
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader("Token");
-
-        //JWTToken jwtToken = new JWTToken(token);
+        String token = httpServletRequest.getParameter("token");
+        JWTToken jwtToken = new JWTToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-        //getSubject(request, response).login(jwtToken);
-        // 如果没有抛出异常则代表登入成功，返回true
+        getSubject(request, response).login(jwtToken);
         return true;
     }
 
@@ -94,7 +105,14 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             //设置编码，否则中文字符在重定向时会变为空字符串
             message = URLEncoder.encode(message, "UTF-8");
-            httpServletResponse.sendRedirect("/unauthorized/" + message);
+            httpServletResponse.sendRedirect("/user/testRoles1" + message);
+
+            /*JSONObject jsonObject = new JSONObject();
+            jsonObject.put("token","无效参数");
+            jsonObject.put("state",false);
+            jsonObject.put("msg","参数错误，请输入token");
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().println(jsonObject);*/
         } catch (IOException e) {
             //logger.error(e.getMessage());
         }

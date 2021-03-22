@@ -1,5 +1,6 @@
-package com.hz.config;
+package com.hz.test;
 
+import com.hz.config.realm.ShiroCustomerRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;

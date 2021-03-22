@@ -1,11 +1,13 @@
 package com.hz.controller;
 
 import com.hz.entity.ConvertResult;
+import com.hz.entity.ResultMap;
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.JWTUtils;
 import com.hz.utils.SaltUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Controller
@@ -32,6 +35,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private ResultMap resultMap;
 
     //@ResponseBody
     @GetMapping("/findAll")
@@ -271,14 +277,15 @@ public class UserController {
     @GetMapping(value = "testRoles")
     //@RequiresPermissions("")
     @ResponseBody
-    public ConvertResult testRoles(HttpServletRequest request){
-        //Claims calms = (Claims)request.getAttribute("claims");
+    public String testRoles(HttpServletRequest request){
+        Claims calms = (Claims)request.getAttribute("claims");
 //        Object roles = calms.get("roles");
         //logger.info("roles",roles);
         //logger.info(calms.toString());
         //User user = userService.getUser("test");
 
-        return new ConvertResult(0,"测试权限","权限测试成功");
+        //return new ConvertResult(0,"测试权限","权限测试成功");
+        return "success";
 
     }
 
@@ -294,6 +301,11 @@ public class UserController {
 
         return new ConvertResult(0,"测试权限1","权限测试成功");
 
+    }
+
+    @RequestMapping(path = "/unauthorized/{message}")
+    public ResultMap unauthorized(@PathVariable String message) throws UnsupportedEncodingException {
+        return resultMap.success().code(401).message(message);
     }
 
 }

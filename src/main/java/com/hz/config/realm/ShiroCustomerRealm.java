@@ -1,9 +1,12 @@
-package com.hz.config;
+package com.hz.config.realm;
 
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.ApplicationContextUtils;
+import com.hz.utils.JWTToken;
+import com.hz.utils.JWTUtil;
 import com.hz.utils.MyByteSource;
+import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -24,6 +27,14 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
     private static final Logger logger = LoggerFactory.getLogger(ShiroCustomerRealm.class);
    // @Autowired
    //UserService userService ;
+
+    /**
+     * 必须重写此方法，不然会报错
+     */
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JWTToken;
+    }
     /**
      * 授权
      * @param principalCollection
@@ -63,13 +74,37 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String principal = (String) authenticationToken.getPrincipal();
         //在工厂中获取service对象
-        logger.info("结果:",principal);
+        logger.info("结果:"+principal);
+
+        Claims claims = JWTUtil.parseJWT(principal);
+        String id = claims.getId();
+        logger.info(id);
+
+
+        logger.info("11"+claims);
+        String username = claims.getSubject();
+        logger.info("username:"+username);
+        if (username == null) {
+            throw new AuthenticationException("token认证失败！");
+        }
+        /*String password = userMapper.getPassword(username);
+        if (password == null) {
+            throw new AuthenticationException("该用户不存在！");
+        }
+        int ban = userMapper.checkUserBanStatus(username);
+        if (ban == 1) {
+            throw new AuthenticationException("该用户已被封号！");
+        }*/
+
         UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         logger.info("userService:"+userService);
         System.out.println("结果："+userService);
-        User user = userService.getUser(principal);
+        User user = userService.getUser(username);
+        if (user ==null){
+            throw new AuthenticationException("该用户不存在！");
+        }
         String password = user.getPassword();
-        logger.info("密码:",password);
+        logger.info("密码:"+password);
         return new SimpleAuthenticationInfo(user.getName(),password, new MyByteSource(user.getSalt()),this.getName());
     }
 }
