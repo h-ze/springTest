@@ -33,7 +33,7 @@ public class JWTUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256,"itcast")
-                .setExpiration(new Date(nowMillis+1000*60 *60 *24))
+                .setExpiration(new Date(nowMillis+1000*60 *1))
                 //.claim("username",username)
                 .claim("password",password)
                 .claim("roles",roles)

@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,16 +277,17 @@ public class UserController {
 
     @GetMapping(value = "testRoles")
     //@RequiresPermissions("")
+    @RequiresRoles("admin")
     @ResponseBody
-    public String testRoles(HttpServletRequest request){
+    public ConvertResult testRoles(HttpServletRequest request){
         Claims calms = (Claims)request.getAttribute("claims");
 //        Object roles = calms.get("roles");
         //logger.info("roles",roles);
         //logger.info(calms.toString());
         //User user = userService.getUser("test");
 
-        //return new ConvertResult(0,"测试权限","权限测试成功");
-        return "success";
+        return new ConvertResult(0,"测试权限","权限测试成功");
+        //return "success";
 
     }
 

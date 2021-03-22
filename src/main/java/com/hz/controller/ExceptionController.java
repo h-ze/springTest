@@ -2,9 +2,7 @@ package com.hz.controller;
 
 
 import org.apache.shiro.ShiroException;
-import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -15,7 +13,7 @@ public class ExceptionController {
 
 
 
-    @ResponseBody
+    //@ResponseBody
     @ExceptionHandler
     public Map<String,Object> handleException(Exception e){
         Map<String,Object> map = new HashMap<>();
@@ -25,13 +23,16 @@ public class ExceptionController {
         return map;
     }
 
-    @ResponseBody
+    //@ResponseBody
     @ExceptionHandler(ShiroException.class)
-    public Map<String,Object> handleException(ShiroException e){
+    public Map<String,Object> shiroHandleException(Exception e){
         Map<String,Object> map = new HashMap<>();
         map.put("code","999999");
         map.put("msg","发生了未可知的错误");
         map.put("message",e.getMessage());
         return map;
     }
+
+
+
 }

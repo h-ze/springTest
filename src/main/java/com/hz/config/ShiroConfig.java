@@ -2,7 +2,6 @@ package com.hz.config;
 
 import com.hz.config.filter.JWTFilter;
 import com.hz.config.realm.ShiroCustomerRealm;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -78,6 +77,8 @@ public class ShiroConfig {
         //map.put("/user/login","anon");
         map.put("/**","jwt");
         //map.put("/**","authc");//authc 请求这个资源需要认证和授权
+        map.put("/unauthorized/**", "anon");
+
         //默认认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/user/testRoles1");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
@@ -107,13 +108,16 @@ public class ShiroConfig {
     public Realm getRealm(){
         logger.info("getRealm");
         ShiroCustomerRealm shiroCustomerRealm = new ShiroCustomerRealm();
+
+
+        //如果在这里添加凭证校验匹配器 会和shirCustomerRealm中的默认匹配器匹配的发生冲突
         //修改凭证校验匹配器
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        /*HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         //设置加密算法为md5
         hashedCredentialsMatcher.setHashAlgorithmName("MD5");
         //设置散列次数
         hashedCredentialsMatcher.setHashIterations(1024);
-        shiroCustomerRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+        shiroCustomerRealm.setCredentialsMatcher(hashedCredentialsMatcher);*/
         //开启缓存管理
         //shiroCustomerRealm.setCacheManager(new EhCacheManager());
 

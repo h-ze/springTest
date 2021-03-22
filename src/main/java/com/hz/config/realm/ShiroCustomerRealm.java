@@ -5,7 +5,6 @@ import com.hz.service.UserService;
 import com.hz.utils.ApplicationContextUtils;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.MyByteSource;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -49,14 +48,17 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
 
         //
         UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
-        User rolesByUsername = userService.findRolesByUsername(primaryPrincipal);
-
+        Claims claims = JWTUtil.parseJWT(primaryPrincipal);
+        String subject = claims.getSubject();
+        User rolesByUsername = userService.findRolesByUsername(subject);
+        logger.info("用户:"+rolesByUsername);
         //如果添加缓存之后在该方法下再次请求数据库将不会再向数据库发起请求
         //userService.getUser("zhangsan");
         //System.out.println(rolesByUsername);
         if (!ListUtils.isEmpty(rolesByUsername.getRoles())) {
             SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
             rolesByUsername.getRoles().forEach(role-> simpleAuthorizationInfo.addRole(role.getName()));
+            simpleAuthorizationInfo.addRole("admin");
             return simpleAuthorizationInfo;
 
         }
@@ -84,6 +86,7 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         logger.info("11"+claims);
         String username = claims.getSubject();
         logger.info("username:"+username);
+        //username =null;
         if (username == null) {
             throw new AuthenticationException("token认证失败！");
         }
@@ -105,6 +108,11 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         }
         String password = user.getPassword();
         logger.info("密码:"+password);
-        return new SimpleAuthenticationInfo(user.getName(),password, new MyByteSource(user.getSalt()),this.getName());
+
+        //return new SimpleAuthenticationInfo(user.getName(),user.getPassword(), new MyByteSource(user.getSalt()),this.getName());
+
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(principal, principal, this.getName());
+
+        return simpleAuthenticationInfo;
     }
 }

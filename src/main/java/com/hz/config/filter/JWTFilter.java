@@ -1,15 +1,12 @@
 package com.hz.config.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.hz.config.ShiroConfig;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.MalformedJwtException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
     //private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -41,11 +37,12 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
                 return true;
-            } catch (Exception e) {
-                //token 错误
+            } catch (Exception e){
                 responseError(response, e.getMessage());
+
                 return false;
-            }
+            }//token 错误
+
         } else {
             logger.info("token为空");
         }
@@ -69,11 +66,16 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 执行登陆操作
      */
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response){
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getParameter("token");
+
+        Claims claims = JWTUtil.parseJWT(token);
+
         JWTToken jwtToken = new JWTToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
+
+        //UsernamePasswordToken jwtToken = new UsernamePasswordToken("test","123456");
         getSubject(request, response).login(jwtToken);
         return true;
     }
@@ -101,20 +103,37 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 将非法请求跳转到 /unauthorized/**
      */
     private void responseError(ServletResponse response, String message) {
-        try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            //设置编码，否则中文字符在重定向时会变为空字符串
-            message = URLEncoder.encode(message, "UTF-8");
-            httpServletResponse.sendRedirect("/user/testRoles1" + message);
+        {
 
-            /*JSONObject jsonObject = new JSONObject();
+            logger.info("抛异常:"+message);
+            //HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            //设置编码，否则中文字符在重定向时会变为空字符串
+            //message = URLEncoder.encode(message, "UTF-8");
+            //httpServletResponse.sendRedirect("/unauthorized/" + message);
+
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("token","无效参数");
             jsonObject.put("state",false);
             jsonObject.put("msg","参数错误，请输入token");
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().println(jsonObject);*/
-        } catch (IOException e) {
+            try {
+                response.getWriter().println(jsonObject.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } /*catch (IOException e) {
+            logger.info(e.getMessage());
             //logger.error(e.getMessage());
-        }
+        }*/
+    }
+
+    @Override
+    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
+        HttpServletResponse httpResponse = WebUtils.toHttp(servletResponse);
+        httpResponse.setCharacterEncoding("UTF-8");
+        httpResponse.setContentType("application/json;charset=UTF-8");
+        //httpResponse.setStatus(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION);
+        //fillCorsHeader(WebUtils.toHttp(servletRequest), httpResponse);
+        return false;
     }
 }
