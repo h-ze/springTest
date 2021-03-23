@@ -50,6 +50,8 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRole("admin");
         return simpleAuthorizationInfo;
+
+        //根据数据库中的用户权限进行添加
         /*UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         Claims claims = JWTUtil.parseJWT(primaryPrincipal);
         String subject = claims.getSubject();
@@ -68,7 +70,7 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
 
     /**
      * 身份认证 shiro的相关认证会自动跳到这个方法里
-     * @param authenticationToken
+     * @param authenticationToken AuthenticationToken对象
      * @return
      * @throws AuthenticationException
      */
@@ -77,12 +79,7 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         String principal = (String) authenticationToken.getPrincipal();
         //在工厂中获取service对象
         logger.info("结果:"+principal);
-
         Claims claims = JWTUtil.parseJWT(principal);
-        String id = claims.getId();
-        logger.info(id);
-
-        logger.info("11"+claims);
         String username = claims.getSubject();
         logger.info("username:"+username);
         if (username == null) {
@@ -99,7 +96,6 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
 
         UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         logger.info("userService:"+userService);
-        System.out.println("结果："+userService);
         User user = userService.getUser(username);
         if (user ==null){
             throw new AuthenticationException("该用户不存在！");

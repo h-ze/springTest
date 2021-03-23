@@ -83,6 +83,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         //String token = httpServletRequest.getHeader("token");
         Claims claims = JWTUtil.parseJWT(token);
 
+        logger.info("执行登录任务");
+
+        //在此处进行redis的验证
+
         JWTToken jwtToken = new JWTToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
 

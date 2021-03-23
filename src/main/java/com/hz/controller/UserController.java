@@ -243,10 +243,12 @@ public class UserController {
             logger.info(sha);
             if (sha.equals(user.getPassword())){
                 String token = jwtUtil.createJWT(user.getId().toString(),
-                        user.getName(),password, user.getSalt());
+                        user.getName()/*,password*/, user.getSalt());
                 logger.info(token);
-                boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
-                logger.info("结果:",setRedisExpire);
+
+                //将登录的token存储到redis中
+                //boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
+                //logger.info("结果:",setRedisExpire);
                 return new ConvertResult(0,"登录成功",token);
             }else {
                 return new ConvertResult(999999,"登录失败,密码错误,请重新输入","");
@@ -256,11 +258,18 @@ public class UserController {
         }
     }
 
-    @RequestMapping("logout")
-    public String logout(){
+    @PutMapping("logout")
+    @ResponseBody
+    public ConvertResult logout(){
         Subject subject = SecurityUtils.getSubject();
+        String subjectPrincipal = (String) subject.getPrincipal();
+        logger.info("退出登录前的token:"+subjectPrincipal);
         subject.logout();
-        return "";
+        String principal = (String)subject.getPrincipal();
+        logger.info("退出登录的token:"+principal);
+        //需要删除redis里的关于登录的key
+
+        return new ConvertResult(0,"退出登录","退出登录成功");
     }
 
 
@@ -293,7 +302,6 @@ public class UserController {
                 resultMap.put("msg",e.getMessage());
                 resultMap.put("state",true);
             }
-
         }
         return resultMap;
     }

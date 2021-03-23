@@ -96,6 +96,9 @@ public class ShiroConfig {
 
         //默认认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/user/testRoles");
+        shiroFilterFactoryBean.setLoginUrl("/login"); // 首页get方式authc.loginUrl = /login
+        shiroFilterFactoryBean.setSuccessUrl("/index"); // 错误页面，认证不通过跳转
+        shiroFilterFactoryBean.setUnauthorizedUrl("/error");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
 

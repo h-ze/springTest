@@ -35,7 +35,7 @@ public class ShiroTest {
         securityManager.setRealm(myCusttomer);
 
         //3.SecurityUtils 给全局安全工具类设置安全管理器
-        //SecurityUtils.setSecurityManager(securityManager);
+        SecurityUtils.setSecurityManager(securityManager);
         //ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //shiroFilterFactoryBean.setSecurityManager(securityManager);
 

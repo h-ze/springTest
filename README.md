@@ -1,4 +1,5 @@
 整合spring代码
 整合jwt登录
 实现后台swagger界面
-shiro
+整合shiro进行认证授权
+问题:如果一直在使用时token应该不能过期,如果超过几个小时未使用token应该会有个默认过期时间
