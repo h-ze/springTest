@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
-    //private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
     @Autowired
@@ -36,19 +38,27 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             logger.info("登录");
             try {
                 executeLogin(request, response);
-                return true;
+            } catch (ExpiredJwtException e){
+                responseError(response, "token已过期,请重新登录");
+                return false;
+            } catch (MalformedJwtException e){
+                responseError(response, "token错误,请输入正确的token");
+                return false;
             } catch (Exception e){
+                e.printStackTrace();
                 responseError(response, e.getMessage());
-
                 return false;
             }//token 错误
 
         } else {
             logger.info("token为空");
+            responseError(response, "参数错误,请输入用户token");
+            return false;
         }
-        logger.info("请求进来");
-        //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
         return true;
+        //logger.info("请求进来");
+        //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
+        //return true;
     }
 
     /**
@@ -59,6 +69,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
         String token = req.getParameter("token");
+        //String token = req.getHeader("token");
         return token != null;
     }
 
@@ -69,7 +80,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getParameter("token");
-
+        //String token = httpServletRequest.getHeader("token");
         Claims claims = JWTUtil.parseJWT(token);
 
         JWTToken jwtToken = new JWTToken(token);
@@ -103,30 +114,31 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 将非法请求跳转到 /unauthorized/**
      */
     private void responseError(ServletResponse response, String message) {
-        {
+        logger.info("抛异常:"+message);
+        //HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        //设置编码，否则中文字符在重定向时会变为空字符串
+        //message = URLEncoder.encode(message, "UTF-8");
+        //httpServletResponse.sendRedirect("/unauthorized/" + message);
 
-            logger.info("抛异常:"+message);
-            //HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            //设置编码，否则中文字符在重定向时会变为空字符串
-            //message = URLEncoder.encode(message, "UTF-8");
-            //httpServletResponse.sendRedirect("/unauthorized/" + message);
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("token","无效参数");
-            jsonObject.put("state",false);
-            jsonObject.put("msg","参数错误，请输入token");
-            response.setContentType("application/json;charset=UTF-8");
-            try {
-                response.getWriter().println(jsonObject.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } /*catch (IOException e) {
-            logger.info(e.getMessage());
-            //logger.error(e.getMessage());
-        }*/
+        JSONObject jsonObject = new JSONObject(true);
+        jsonObject.put("code","999999");
+        jsonObject.put("state",false);
+        jsonObject.put("msg",message);
+        response.setContentType("application/json;charset=UTF-8");
+        try {
+            response.getWriter().println(jsonObject.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * 如果这个Filter在之前isAccessAllowed（）方法中返回false,则会进入这个方法。我们这里直接返回错误的response
+     *
+     * 表示当访问拒绝时是否已经处理了；如果返回true表示需要继续处理；如果返回false表示该拦截器实例已经处理了，将直接返回即可。
+     * onAccessDenied是否执行取决于isAccessAllowed的值，如果返回true则onAccessDenied不会执行；如果返回false，执行onAccessDenied
+     * 如果onAccessDenied也返回false，则直接返回，不会进入请求的方法（只有isAccessAllowed和onAccessDenied的情况下）
+     * */
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletResponse httpResponse = WebUtils.toHttp(servletResponse);
@@ -136,4 +148,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         //fillCorsHeader(WebUtils.toHttp(servletRequest), httpResponse);
         return false;
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.hz.controller;
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import io.swagger.annotations.*;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @Api(tags = "swagger user接口")
-//springboot swagger访问地址 http://localhost:8081/springboot/swagger-ui.html
 @RequestMapping("/swagger")
 public class SwaggerController {
 
@@ -39,6 +39,7 @@ public class SwaggerController {
 
     @GetMapping("/findUserById")
     @ApiOperation("根据id查询用户的接口")
+    @RequiresRoles("admin1")
     @ApiImplicitParam(name = "id", value = "用户id", defaultValue = "99", required = true)
     public Map<String,Object> getUserById(Integer id) {
         System.out.println(id);

@@ -11,8 +11,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionController {
 
-
-
     //@ResponseBody
     @ExceptionHandler
     public Map<String,Object> handleException(Exception e){
@@ -28,7 +26,7 @@ public class ExceptionController {
     public Map<String,Object> shiroHandleException(Exception e){
         Map<String,Object> map = new HashMap<>();
         map.put("code","999999");
-        map.put("msg","发生了未可知的错误");
+        map.put("msg","认证失败");
         map.put("message",e.getMessage());
         return map;
     }

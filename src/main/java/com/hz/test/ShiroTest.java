@@ -7,6 +7,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,10 @@ public class ShiroTest {
         securityManager.setRealm(myCusttomer);
 
         //3.SecurityUtils 给全局安全工具类设置安全管理器
-        SecurityUtils.setSecurityManager(securityManager);
+        //SecurityUtils.setSecurityManager(securityManager);
+        //ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        //shiroFilterFactoryBean.setSecurityManager(securityManager);
+
 
         //4.关键对象subject主体
         Subject subject = SecurityUtils.getSubject();

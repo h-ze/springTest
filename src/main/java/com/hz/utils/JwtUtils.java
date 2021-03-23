@@ -9,7 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Calendar;
 import java.util.Map;
 
-public class JWTUtils {
+public class JwtUtils {
 
     private static final String SIGN ="123";
     public static String getToken(Map<String,String> map){

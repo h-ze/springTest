@@ -2,12 +2,19 @@ package com.hz.config;
 
 import com.hz.config.filter.JWTFilter;
 import com.hz.config.realm.ShiroCustomerRealm;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionStorageEvaluator;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -73,26 +80,33 @@ public class ShiroConfig {
         //配置系统的受限资源
         
         //配置系统公共资源
-        Map<String, String> map = new HashMap<String,String>();
+        Map<String, String> filterChainDefinitionMap = new HashMap<String,String>();
         //map.put("/user/login","anon");
-        map.put("/**","jwt");
+        filterChainDefinitionMap.put("/**","jwt");
         //map.put("/**","authc");//authc 请求这个资源需要认证和授权
-        map.put("/unauthorized/**", "anon");
+        //放行Swagger2页面，需要放行这些
+        filterChainDefinitionMap.put("/swagger-ui.html","anon");
+        filterChainDefinitionMap.put("/swagger/**","anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**","anon");
+        filterChainDefinitionMap.put("/v2/**","anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/user/login","anon");
+        filterChainDefinitionMap.put("/unauthorized/**", "anon");
 
         //默认认证界面路径
-        shiroFilterFactoryBean.setLoginUrl("/user/testRoles1");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
-        logger.info("测试");
+        shiroFilterFactoryBean.setLoginUrl("/user/testRoles");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
 
     }
     //2.创建安全管理器
     @Bean
-    public SecurityManager getSecurityManager( Realm realm){
-        logger.debug("test");
+    public SecurityManager getSecurityManager(Realm realm,SessionStorageEvaluator sessionStorageEvaluator){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(realm);
-
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        subjectDAO.setSessionStorageEvaluator(sessionStorageEvaluator);
         //关闭shiro自带的session
         /*DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -129,6 +143,17 @@ public class ShiroConfig {
         shiroCustomerRealm.setAuthorizationCacheName("authorizationCache");*/
 
         return shiroCustomerRealm;
+    }
+
+    /**
+     * 禁用session, 不保存用户登录状态。保证每次请求都重新认证。
+     * 需要注意的是，如果用户代码里调用Subject.getSession()还是可以用session，如果要完全禁用，要配合下面的noSessionCreation的Filter来实现
+     */
+    @Bean
+    protected SessionStorageEvaluator sessionStorageEvaluator(){
+        DefaultWebSessionStorageEvaluator sessionStorageEvaluator = new DefaultWebSessionStorageEvaluator();
+        sessionStorageEvaluator.setSessionStorageEnabled(false);
+        return sessionStorageEvaluator;
     }
 
 

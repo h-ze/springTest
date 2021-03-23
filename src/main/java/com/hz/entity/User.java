@@ -11,10 +11,8 @@ import java.util.List;
 @Configuration
 public class User {
 
-    //@Value("${id}")
     private Integer id;
     private String name;
-    @Value("${age}")
     private Integer age;
     private Date bir;
     private String password;

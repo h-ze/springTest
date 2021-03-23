@@ -23,6 +23,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
  */
 @Configuration
 @EnableSwagger2
+//springboot swagger访问地址 http://localhost:8081/springboot/swagger-ui.html
 public class SwaggerConfig {
 
     @Bean
@@ -73,7 +74,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("测试starmark-API").description("©2018 Copyright. Powered By starmark.")
+        return new ApiInfoBuilder().title("测试swagger-API").description("©2021 Copyright.")
                 // .termsOfServiceUrl("")
                 .contact(new Contact("Starmark", "https://www.baidu.com", "hz15858@163.com")).license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/springfox/springfox/blob/master/LICENSE").version("2.0").build();

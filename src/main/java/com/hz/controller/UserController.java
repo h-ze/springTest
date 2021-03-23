@@ -1,11 +1,14 @@
 package com.hz.controller;
 
+import com.hz.config.filter.JWTFilter;
+import com.hz.config.realm.ShiroCustomerRealm;
 import com.hz.entity.ConvertResult;
 import com.hz.entity.ResultMap;
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.JWTUtils;
+import com.hz.utils.JwtUtils;
+import com.hz.utils.RedisUtil;
 import com.hz.utils.SaltUtil;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
@@ -14,6 +17,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -32,10 +39,15 @@ import java.util.*;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
     private ResultMap resultMap;
@@ -46,7 +58,7 @@ public class UserController {
         List<User> all = userService.findAll();
         model.addAttribute("users", all);
         logger.info("info信息");
-        return "showALl";
+        return "showAll";
     }
 
     @GetMapping("/save")
@@ -119,6 +131,15 @@ public class UserController {
     public ConvertResult loginByShiro(String username, String password){
         System.out.println(username);
         System.out.println(password);
+        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map stringFiltLinkedHashMap = new LinkedHashMap<String, Filter>();
+        stringFiltLinkedHashMap.put("jwt",new JWTFilter());
+        shiroFilterFactoryBean.setFilters(stringFiltLinkedHashMap);
+        Map<String, String> map = new HashMap<>();
+        map.put("/**","jwt");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+        defaultSecurityManager.setRealm(new ShiroCustomerRealm());
 
         /*DefaultSecurityManager securityManager = new DefaultSecurityManager();
         //2.给安全管理器设置realm
@@ -222,8 +243,10 @@ public class UserController {
             logger.info(sha);
             if (sha.equals(user.getPassword())){
                 String token = jwtUtil.createJWT(user.getId().toString(),
-                        user.getName(),password/*user.getPassword()*/, user.getSalt());
+                        user.getName(),password, user.getSalt());
                 logger.info(token);
+                boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
+                logger.info("结果:",setRedisExpire);
                 return new ConvertResult(0,"登录成功",token);
             }else {
                 return new ConvertResult(999999,"登录失败,密码错误,请重新输入","");
@@ -259,7 +282,7 @@ public class UserController {
                 Map<String, String> map = new HashMap<>();
                 map.put("id",user.getId().toString());
                 map.put("usernmae",user.getName());
-                String token = JWTUtils.getToken(map);
+                String token = JwtUtils.getToken(map);
 
 
                 resultMap.put("token",token);
@@ -285,7 +308,8 @@ public class UserController {
         //logger.info("roles",roles);
         //logger.info(calms.toString());
         //User user = userService.getUser("test");
-
+        Session session = SecurityUtils.getSubject().getSession();
+        logger.info(session.toString());
         return new ConvertResult(0,"测试权限","权限测试成功");
         //return "success";
 
