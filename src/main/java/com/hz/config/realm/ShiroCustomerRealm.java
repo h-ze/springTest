@@ -25,8 +25,6 @@ import org.thymeleaf.util.ListUtils;
 public class ShiroCustomerRealm extends AuthorizingRealm {
 
     private static final Logger logger = LoggerFactory.getLogger(ShiroCustomerRealm.class);
-   // @Autowired
-   //UserService userService ;
 
     /**
      * 必须重写此方法，不然会报错
@@ -66,7 +64,6 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         }
         return null;*/
     }
-
 
     /**
      * 身份认证 shiro的相关认证会自动跳到这个方法里

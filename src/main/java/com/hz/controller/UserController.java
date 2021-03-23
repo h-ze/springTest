@@ -68,6 +68,35 @@ public class UserController {
         return "redirect:/user/findAll";
     }
 
+    @GetMapping("findAllJsp")
+    public String findAllJsp(HttpServletRequest request, Model model){
+        model.addAttribute("name","heze");
+        List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
+        model.addAttribute("users", users);
+        return "index";
+    }
+
+    @GetMapping("findAllByGThymeleaf")
+    public String findAll(HttpServletRequest request,Model model){
+        model.addAttribute("name","heze");
+        model.addAttribute("username","<a href=''>test </a>");
+        //List<User> users = Arrays.asList(new User("1", "zhangsan", 24, new Date()), new User("2", "lisi", 24, new Date()));
+        //model.addAttribute("users", users);
+        List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
+
+        model.addAttribute("user", new User(1, "zhangsan", 22, new Date()));
+        model.addAttribute("users", users);
+
+        return "index";
+    }
+
+    @GetMapping("delete")
+    @ResponseBody
+    public String deleteUser(String id,String name){
+        return "删除id为"+id+" 姓名为"+name;
+    }
+
+
     @PostMapping(value = "/addUser")
     @ResponseBody
     public ConvertResult addUser(@RequestParam("username") String username , @RequestParam("password") String password){
@@ -96,136 +125,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("findAllJsp")
-    public String findAllJsp(HttpServletRequest request, Model model){
-        model.addAttribute("name","heze");
-        List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
-        model.addAttribute("users", users);
-        return "index";
-    }
-
-    @GetMapping("findAllByGThemeleaf")
-    public String findAll(HttpServletRequest request,Model model){
-        model.addAttribute("name","heze");
-        model.addAttribute("username","<a href=''>test </a>");
-        //List<User> users = Arrays.asList(new User("1", "zhangsan", 24, new Date()), new User("2", "lisi", 24, new Date()));
-        //model.addAttribute("users", users);
-        List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
-
-        model.addAttribute("user", new User(1, "zhangsan", 22, new Date()));
-        model.addAttribute("users", users);
-
-        return "index";
-    }
-
-    @GetMapping("delete")
-    @ResponseBody
-    public String deleteUser(String id,String name){
-        return "删除id为"+id+" 姓名为"+name;
-    }
-
-
-    //使用shiro
-    @PostMapping("loginByShiro")
-    @ResponseBody
-    public ConvertResult loginByShiro(String username, String password){
-        System.out.println(username);
-        System.out.println(password);
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        Map stringFiltLinkedHashMap = new LinkedHashMap<String, Filter>();
-        stringFiltLinkedHashMap.put("jwt",new JWTFilter());
-        shiroFilterFactoryBean.setFilters(stringFiltLinkedHashMap);
-        Map<String, String> map = new HashMap<>();
-        map.put("/**","jwt");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
-        defaultSecurityManager.setRealm(new ShiroCustomerRealm());
-
-        /*DefaultSecurityManager securityManager = new DefaultSecurityManager();
-        //2.给安全管理器设置realm
-        ShiroCustomerRealm myCusttomer = new ShiroCustomerRealm();
-
-        //对值进行hash及加密方式以及散列次数
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");
-        hashedCredentialsMatcher.setHashIterations(1024);
-
-        myCusttomer.setCredentialsMatcher(hashedCredentialsMatcher);
-        //securityManager.setRealm(new IniRealm("classpath:shiro.ini"));
-        securityManager.setRealm(myCusttomer);
-
-        //3.SecurityUtils 给全局安全工具类设置安全管理器
-        SecurityUtils.setSecurityManager(securityManager);*/
-
-        //4.关键对象subject主体
-        /*Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username,password);
-
-        try {
-            System.out.println("认证状态："+subject.isAuthenticated());
-            subject.login(usernamePasswordToken);
-            System.out.println("认证状态："+subject.isAuthenticated());
-            System.out.println(usernamePasswordToken);
-        }catch (UnknownAccountException e){
-            e.printStackTrace();
-            System.out.println("用户名不存在");
-        }catch (IncorrectCredentialsException e){
-            e.printStackTrace();
-            System.out.println("密码错误");
-        }
-
-        if(subject.isAuthenticated()){
-            //1.基于角色权限控制
-            boolean admin = subject.hasRole("admin");
-            System.out.println("管理员"+admin);
-            //logger.info(admin);
-            System.out.println("权限"+subject.isPermitted("user:update"));
-
-        }*/
-
-        return new ConvertResult(0,"登录成功","获取用户信息成功");
-
-        //User user = userService.getUser(username);
-
-        /*Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username,password);
-
-        try {
-            System.out.println("认证状态："+subject.isAuthenticated());
-            subject.login(usernamePasswordToken);
-            System.out.println("认证状态："+subject.isAuthenticated());
-            System.out.println(usernamePasswordToken);
-        }catch (UnknownAccountException e){
-            e.printStackTrace();
-            System.out.println("用户名不存在");
-        }catch (IncorrectCredentialsException e){
-            e.printStackTrace();
-            System.out.println("密码错误");
-        }
-
-        if(subject.isAuthenticated()){
-            //1.基于角色权限控制
-            boolean admin = subject.hasRole("admin");
-            System.out.println("管理员"+admin);
-            //logger.info(admin);
-            System.out.println("权限"+subject.isPermitted("user:update"));
-            //session.setAttribute("user",user);
-
-            return "redirect:/file/showAllFile";
-        }else {
-            return "redirect:/index/login";
-        }*/
-
-//        if (user.getPassword().equals(password)){
-//            session.setAttribute("user",user);
-//            return "redirect:/file/showAllFile";
-//        }else {
-//            return "redirect:/index/login";
-//        }
-    }
-
     /**
      * 使用jwt
      * @param username 用户名
@@ -233,8 +132,13 @@ public class UserController {
      * @return ConvertResult对象
      */
     @PostMapping(value = "/login")
+    @ApiOperation(value ="用户登录",notes="获取用户的token")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", dataType = "String",value = "用户名"/*, defaultValue = "test"*/,required = true),
+            @ApiImplicitParam(name = "password", dataType = "String",value = "用户密码"/*, defaultValue = "123456"*/, required = true)
+    })
     @ResponseBody
-    public ConvertResult login(@RequestParam("username") String username , @RequestParam("password") String password){
+    public ConvertResult login(String username ,String password){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -272,7 +176,7 @@ public class UserController {
         return new ConvertResult(0,"退出登录","退出登录成功");
     }
 
-
+/*
     @PostMapping("getToken")
     @ApiOperation(value ="用户登录",notes="获取用户的token")
     @ApiImplicitParams({
@@ -304,7 +208,7 @@ public class UserController {
             }
         }
         return resultMap;
-    }
+    }*/
 
     @GetMapping(value = "testRoles")
     //@RequiresPermissions("")
