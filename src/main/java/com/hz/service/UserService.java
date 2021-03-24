@@ -1,6 +1,5 @@
 package com.hz.service;
 
-import com.hz.entity.Role;
 import com.hz.entity.User;
 
 import java.util.List;
@@ -17,6 +16,8 @@ public interface UserService {
     User findRolesByUsername(String username);
 
     int deleteUser(String userId,String password);
+
+    int deleteUser(String userId);
 
     int updateUserPassword(User user);
 

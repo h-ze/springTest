@@ -1,7 +1,6 @@
 package com.hz.service.impl;
 
 import com.hz.dao.UserDAO;
-import com.hz.entity.Role;
 import com.hz.entity.User;
 import com.hz.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service("userService")
 @Transactional
@@ -45,7 +43,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUserId(String userId) {
         User user = userDAO.getUserById(userId);
-
         if(user!=null){
             return user;
         }else {
@@ -60,12 +57,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deleteUser(String userId, String password) {
-        return 0;
+        int i = userDAO.deleteUserByOwner(userId, password);
+        return i;
     }
 
     @Override
-    public int updateUserPassword(String userId, String password) {
-        return 0;
+    public int deleteUser(String userId) {
+        int i = userDAO.deleteUser(userId);
+        return i;
+    }
+
+    @Override
+    public int updateUserPassword(User user) {
+        int i = userDAO.updateUser(user);
+        return i;
     }
 
 }

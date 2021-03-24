@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * swagger测试地址
+ */
 @RestController
 @Api(tags = "swagger user接口")
 @RequestMapping("/swagger")

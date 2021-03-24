@@ -9,10 +9,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -32,7 +29,6 @@ public class AdminUserController {
      */
     @PostMapping(value = "/addUser")
     @RequiresRoles("admin")
-    @ResponseBody
     public ConvertResult addUser(@RequestParam("username") String username){
         logger.info(username);
         User user = userService.getUser(username);
@@ -53,6 +49,23 @@ public class AdminUserController {
             }else {
                 return new ConvertResult(0,"添加失败","用户添加失败");
             }
+        }
+    }
+
+    /**
+     * 管理员删除用户
+     * @param userId 用户的userId
+     * @return
+     */
+    @DeleteMapping("/deleteUser")
+    @RequiresRoles("admin")
+    public ConvertResult deleteUser(String userId){
+        int i = userService.deleteUser(userId);
+
+        if (i >0){
+            return new ConvertResult(0,"删除成功","用户已删除");
+        }else {
+            return new ConvertResult(0,"删除失败","用户删除失败");
         }
     }
 }

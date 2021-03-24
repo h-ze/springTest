@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 异常处理逻辑
+ */
 @RestControllerAdvice
 public class ExceptionController {
 

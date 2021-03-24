@@ -10,7 +10,11 @@
     </select>
 
     <select id="getUser" parameterType="User" resultType="User">
-        select id,name,age,bir,password,salt from user where name =#{username}
+        select id,name,age,bir,password,salt from user where name = #{username}
+    </select>
+
+    <select id="getUserById" parameterType="String" resultType="User">
+        select id,name,age,bir,password,salt from user where userId = #{userId}
     </select>
 
     <resultMap id="userMap" type="User">
@@ -28,4 +32,16 @@
         on ur.roleid =r.id
         where u.name= #{username}
     </select>
+
+    <delete id="deleteUserByOwner" parameterType="String">
+        delete from user where name =#{username} and password =#{password}
+    </delete>
+
+    <delete id="deleteUser" parameterType="String">
+        delete from user where name =#{username}
+    </delete>
+
+    <update id="updateUser" parameterType="User">
+        update user set password =#{password} where userId =#{userId}
+    </update>
 </mapper>
