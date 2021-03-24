@@ -17,6 +17,7 @@ public class User {
     private Date bir;
     private String password;
     private String salt;
+    private String userId;
 
 
     private List<Role> roles;
@@ -88,14 +89,25 @@ public class User {
         this.age = age;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", bir=" + bir +
                 ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", userId='" + userId + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

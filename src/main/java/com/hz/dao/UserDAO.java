@@ -10,7 +10,7 @@ public interface UserDAO {
     int save(User user);
     List<User> findAll();
     User getUser(String username);
-
+    User getUserById(String userId);
     User findRolesByUsername(String username);
 
 }

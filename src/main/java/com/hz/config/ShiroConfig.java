@@ -92,6 +92,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/v2/**","anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/user/login","anon");
+        filterChainDefinitionMap.put("/user/registerUser","anon");
         filterChainDefinitionMap.put("/unauthorized/**", "anon");
 
         //默认认证界面路径

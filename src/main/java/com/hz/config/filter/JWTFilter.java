@@ -3,9 +3,7 @@ package com.hz.config.filter;
 import com.alibaba.fastjson.JSONObject;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.*;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -14,12 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
@@ -77,22 +77,35 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 执行登陆操作
      */
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response) {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception{
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getParameter("token");
         //String token = httpServletRequest.getHeader("token");
         Claims claims = JWTUtil.parseJWT(token);
 
+        Date expiration = claims.getExpiration();
+        logger.info(expiration.toString());
         logger.info("执行登录任务");
 
         //在此处进行redis的验证
+        logger.info("redis中进行token验证");
 
-        JWTToken jwtToken = new JWTToken(token);
+        //是否需要刷新token
+        long currentTimeMillis = System.currentTimeMillis();
+        long expirationTime = expiration.getTime();
+        long l = expirationTime - currentTimeMillis;
+        logger.info("距离过期时间:"+l);
+        if (l<3600000 && l >0){
+            refreshToken(claims);
+            throw new Exception("刷新token");
+        }
+
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-
+        JWTToken jwtToken = new JWTToken(token);
         //UsernamePasswordToken jwtToken = new UsernamePasswordToken("test","123456");
         getSubject(request, response).login(jwtToken);
         return true;
+
     }
 
     /**
@@ -151,6 +164,24 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         //httpResponse.setStatus(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION);
         //fillCorsHeader(WebUtils.toHttp(servletRequest), httpResponse);
         return false;
+    }
+
+    private void refreshToken(Claims claims){
+        synchronized (new Object()){
+            logger.info("刷新token");
+            Date expiration = claims.getExpiration();
+            logger.info(expiration.toString());
+            JwtBuilder builder= Jwts.builder()
+                    .setClaims(claims)
+                    .signWith(SignatureAlgorithm.HS256,"itcast")
+                    .setExpiration(new Date(System.currentTimeMillis()+1000*60 *60*24));
+            String compact = builder.compact();
+
+            //刷新reids里的token过期时间
+            logger.info("刷新reids里的token过期时间");
+            logger.info(compact);
+        }
+
     }
 
 

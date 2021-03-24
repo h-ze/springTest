@@ -43,8 +43,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUserId(String userId) {
+        User user = userDAO.getUserById(userId);
+
+        if(user!=null){
+            return user;
+        }else {
+            return null;
+        }
+    }
+
+    @Override
     public User findRolesByUsername(String username) {
         return userDAO.findRolesByUsername(username);
+    }
+
+    @Override
+    public int deleteUser(String userId, String password) {
+        return 0;
+    }
+
+    @Override
+    public int updateUserPassword(String userId, String password) {
+        return 0;
     }
 
 }

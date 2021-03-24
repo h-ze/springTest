@@ -90,16 +90,15 @@ public class UserController {
         return "index";
     }
 
-    @GetMapping("delete")
+    /**
+     * 用户注册
+     * @param username 用户名
+     * @param password 密码
+     * @return ConvertResult对象
+     */
+    @PostMapping(value = "/registerUser")
     @ResponseBody
-    public String deleteUser(String id,String name){
-        return "删除id为"+id+" 姓名为"+name;
-    }
-
-
-    @PostMapping(value = "/addUser")
-    @ResponseBody
-    public ConvertResult addUser(@RequestParam("username") String username , @RequestParam("password") String password){
+    public ConvertResult registerUser(@RequestParam("username") String username , @RequestParam("password") String password){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -113,20 +112,18 @@ public class UserController {
             addUser.setPassword(result.get("password"));
             addUser.setBir(new Date());
             addUser.setAge(25);
-            List<Object> list = new ArrayList<>();
-            //list.add("user");
-            //addUser.setRoles(null);
             int i = userService.save(addUser);
             if (i >0){
-                return new ConvertResult(0,"添加成功","用户已添加");
+                return new ConvertResult(0,"注册成功","用户已注册成功");
             }else {
-                return new ConvertResult(0,"添加失败","用户添加失败");
+                return new ConvertResult(0,"注册失败","用户注册失败");
             }
         }
     }
 
     /**
-     * 使用jwt
+     * 用户登录
+     * 使用jwt 记录登录的时间 在调用接口时会判断在线时间 如果在线时间超过3天则强制删除token要求重新登录
      * @param username 用户名
      * @param password 密码
      * @return ConvertResult对象
@@ -162,7 +159,12 @@ public class UserController {
         }
     }
 
-    @PutMapping("logout")
+
+    /**
+     * 用户退出登录
+     * @return ConvertResult对象
+     */
+    @PutMapping("/logout")
     @ResponseBody
     public ConvertResult logout(){
         Subject subject = SecurityUtils.getSubject();
@@ -171,44 +173,77 @@ public class UserController {
         subject.logout();
         String principal = (String)subject.getPrincipal();
         logger.info("退出登录的token:"+principal);
+
         //需要删除redis里的关于登录的key
 
         return new ConvertResult(0,"退出登录","退出登录成功");
     }
 
-/*
-    @PostMapping("getToken")
-    @ApiOperation(value ="用户登录",notes="获取用户的token")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username",  dataType = "String",value = "用户名", defaultValue = "张三"),
-            @ApiImplicitParam(name = "password", value = "用户密码", defaultValue = "123456", required = true)
-    })
-    public Map<String,Object> getToken(String username, String password){
-        System.out.println(username);
-        System.out.println(password);
-        User user = userService.getUser(username);
-        Map<String, Object> resultMap = new HashMap<>();
-
-        if (user.getPassword().equals(password)){
-            //session.setAttribute("user",user);
-            try {
-                Map<String, String> map = new HashMap<>();
-                map.put("id",user.getId().toString());
-                map.put("usernmae",user.getName());
-                String token = JwtUtils.getToken(map);
-
-
-                resultMap.put("token",token);
-                resultMap.put("state",true);
-                resultMap.put("msg","认证成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                resultMap.put("msg",e.getMessage());
-                resultMap.put("state",true);
-            }
+    /**
+     * 用户注销
+     * @param userId 用户id
+     * @param password 密码 输入密码是为了二次验证 防止用户误删
+     * @return
+     */
+    @DeleteMapping("/deleteUser")
+    @ResponseBody
+    public ConvertResult deleteUser(String userId,String password){
+        User user = userService.getUserByUserId(userId);
+        if (user==null){
+            return new ConvertResult(0,"删除失败","用户不存在");
         }
-        return resultMap;
-    }*/
+        String sha = SaltUtil.shiroSha(password ,user.getSalt());
+        logger.info(sha);
+        if (sha.equals(user.getPassword())){
+            int i = userService.deleteUser(user.getUserId(), sha);
+            if (i >0){
+                //将redis中的信息删除
+                //boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
+                //logger.info("结果:",setRedisExpire);
+                return new ConvertResult(0,"注销成功,如需帐号请重新注册","");
+            }else {
+                return new ConvertResult(0,"注销失败,请稍后重试","");
+            }
+
+        }else {
+            return new ConvertResult(999999,"注销失败,密码错误,请重新输入","");
+        }
+    }
+
+    /**
+     * 修改密码
+     * @param password 原密码
+     * @param newPassword 新密码(前端要进行二次密码的比对)
+     * @return
+     */
+    @PutMapping("/updateUserPassword")
+    public ConvertResult updateUserPassword(String password,String newPassword){
+        String principal = (String) SecurityUtils.getSubject().getPrincipal();
+        Claims claims = jwtUtil.parseJWT(principal);
+        String userId = (String)claims.get("userId");
+        User user = userService.getUserByUserId(userId);
+        if (user==null){
+            return new ConvertResult(0,"修改密码失败","用户不存在");
+        }
+        String sha = SaltUtil.shiroSha(password ,user.getSalt());
+        logger.info(sha);
+        if (sha.equals(user.getPassword())){
+            Map<String, String> result = SaltUtil.shiroSalt(newPassword);
+            user.setSalt(result.get("salt"));
+            user.setPassword(result.get("password"));
+            int i = userService.updateUserPassword(user);
+            if (i >0){
+                //将redis中的信息删除或设置一个密码被修改的标识
+                //boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
+                //logger.info("结果:",setRedisExpire);
+                return new ConvertResult(0,"密码修改成功,请重新登录","");
+            }else {
+                return new ConvertResult(0,"修改密码失败,请稍后重试","");
+            }
+        }else {
+            return new ConvertResult(999999,"修改密码失败,请输入正确的密码","");
+        }
+    }
 
     @GetMapping(value = "testRoles")
     //@RequiresPermissions("")
@@ -223,8 +258,6 @@ public class UserController {
         Session session = SecurityUtils.getSubject().getSession();
         logger.info(session.toString());
         return new ConvertResult(0,"测试权限","权限测试成功");
-        //return "success";
-
     }
 
     @GetMapping(value = "testRoles1")
@@ -232,7 +265,7 @@ public class UserController {
     @ResponseBody
     public ConvertResult testRoles1(HttpServletRequest request){
         //Claims calms = (Claims)request.getAttribute("claims");
-//        Object roles = calms.get("roles");
+        //Object roles = calms.get("roles");
         //logger.info("roles",roles);
         //logger.info(calms.toString());
         //User user = userService.getUser("test");
