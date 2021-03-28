@@ -1,13 +1,11 @@
 package com.hz.controller;
 
-import com.hz.config.filter.JWTFilter;
-import com.hz.config.realm.ShiroCustomerRealm;
 import com.hz.entity.ConvertResult;
 import com.hz.entity.ResultMap;
 import com.hz.entity.User;
+import com.hz.entity.UserRoles;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.JwtUtils;
 import com.hz.utils.RedisUtil;
 import com.hz.utils.SaltUtil;
 import io.jsonwebtoken.Claims;
@@ -17,9 +15,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +24,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Controller
-@Api(tags = "swagger 用户管理接口")
+@Api(tags = "用户管理接口")
 @RequestMapping("/user")
 public class UserController {
 
@@ -64,7 +59,7 @@ public class UserController {
     @GetMapping("/save")
     //@ResponseBody
     public String save(User user){
-        userService.save(user);
+        userService.save(user,null);
         return "redirect:/user/findAll";
     }
 
@@ -96,9 +91,10 @@ public class UserController {
      * @param password 密码
      * @return ConvertResult对象
      */
-    @PostMapping(value = "/registerUser")
+    @ApiOperation(value ="用户注册",notes="用来注册用户")
+    @PostMapping(value = "/user")
     @ResponseBody
-    public ConvertResult registerUser(@RequestParam("username") String username , @RequestParam("password") String password){
+    public ConvertResult registerUser(@RequestParam("username") String username , @RequestParam("password") String password,@RequestParam("type") int type){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -112,8 +108,18 @@ public class UserController {
             addUser.setPassword(result.get("password"));
             addUser.setBir(new Date());
             addUser.setAge(25);
-            int i = userService.save(addUser);
+            long l = System.currentTimeMillis();
+            String value = String.valueOf(l);
+            addUser.setUserId(value);
+            UserRoles userRoles = new UserRoles();
+            userRoles.setUserId(value);
+            //logger.info(value);
+            //logger.info();
+            userRoles.setRoleId(type);
+            int i = userService.save(addUser,userRoles);
             if (i >0){
+
+
                 return new ConvertResult(0,"注册成功","用户已注册成功");
             }else {
                 return new ConvertResult(0,"注册失败","用户注册失败");
@@ -144,7 +150,7 @@ public class UserController {
             logger.info(sha);
             if (sha.equals(user.getPassword())){
                 String token = jwtUtil.createJWT(user.getId().toString(),
-                        user.getName()/*,password*/, user.getSalt());
+                        user.getName(),user.getUserId(), user.getSalt());
                 logger.info(token);
 
                 //将登录的token存储到redis中
@@ -159,11 +165,11 @@ public class UserController {
         }
     }
 
-
     /**
      * 用户退出登录
      * @return ConvertResult对象
      */
+    @ApiOperation(value ="退出登录",notes="使token过期")
     @PutMapping("/logout")
     @ResponseBody
     public ConvertResult logout(){
@@ -181,13 +187,19 @@ public class UserController {
 
     /**
      * 用户注销
-     * @param userId 用户id
      * @param password 密码 输入密码是为了二次验证 防止用户误删
      * @return
      */
-    @DeleteMapping("/deleteUser")
+    @ApiOperation(value ="用户注销",notes="用来注销用户")
+    @DeleteMapping("/user")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "password", value = "用户密码", required = true)
+    })
     @ResponseBody
-    public ConvertResult deleteUser(String userId,String password){
+    public ConvertResult deleteUser(String password){
+        String principal = (String) SecurityUtils.getSubject().getPrincipal();
+        Claims claims = jwtUtil.parseJWT(principal);
+        String userId = (String)claims.get("userId");
         User user = userService.getUserByUserId(userId);
         if (user==null){
             return new ConvertResult(0,"删除失败","用户不存在");
@@ -204,7 +216,6 @@ public class UserController {
             }else {
                 return new ConvertResult(0,"注销失败,请稍后重试","");
             }
-
         }else {
             return new ConvertResult(999999,"注销失败,密码错误,请重新输入","");
         }
@@ -216,7 +227,13 @@ public class UserController {
      * @param newPassword 新密码(前端要进行二次密码的比对)
      * @return
      */
-    @PutMapping("/updateUserPassword")
+    @PutMapping("/password")
+    @ApiOperation(value ="修改用户密码",notes="用来修改用户的密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "password",  dataType = "String",value = "用户名", defaultValue = "李四"),
+            @ApiImplicitParam(name = "newPassword", value = "用户地址", defaultValue = "深圳", required = true)
+    })
+    @ResponseBody
     public ConvertResult updateUserPassword(String password,String newPassword){
         String principal = (String) SecurityUtils.getSubject().getPrincipal();
         Claims claims = jwtUtil.parseJWT(principal);
@@ -245,6 +262,7 @@ public class UserController {
         }
     }
 
+    @ApiOperation(value ="测试用户权限",notes="用来测试是否有管理员权限")
     @GetMapping(value = "testRoles")
     //@RequiresPermissions("")
     @RequiresRoles("admin")
@@ -252,6 +270,7 @@ public class UserController {
     public ConvertResult testRoles(HttpServletRequest request){
         Claims calms = (Claims)request.getAttribute("claims");
 //        Object roles = calms.get("roles");
+//        logger.info(roles.toString());
         //logger.info("roles",roles);
         //logger.info(calms.toString());
         //User user = userService.getUser("test");
@@ -260,23 +279,40 @@ public class UserController {
         return new ConvertResult(0,"测试权限","权限测试成功");
     }
 
-    @GetMapping(value = "testRoles1")
-    //@RequiresPermissions("")
+    @GetMapping(value = "test")
     @ResponseBody
-    public ConvertResult testRoles1(HttpServletRequest request){
-        //Claims calms = (Claims)request.getAttribute("claims");
-        //Object roles = calms.get("roles");
-        //logger.info("roles",roles);
-        //logger.info(calms.toString());
-        //User user = userService.getUser("test");
-
+    public ConvertResult test(){
         return new ConvertResult(0,"测试权限1","权限测试成功");
-
     }
 
     @RequestMapping(path = "/unauthorized/{message}")
     public ResultMap unauthorized(@PathVariable String message) throws UnsupportedEncodingException {
         return resultMap.success().code(401).message(message);
+    }
+
+
+    @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
+    @PostMapping("/edit")
+    public ConvertResult updateUserMessage(int type,String keyrword,int page,int per_page){
+        return new ConvertResult(0,"删除成功","用户已删除");
+    }
+
+    @ApiOperation(value ="获取用户个人信息",notes="用来获取用户个人信息")
+    @GetMapping("/edit")
+    public ConvertResult getUserMessage(int type,String keyrword,int page,int per_page){
+        return new ConvertResult(0,"删除成功","用户已删除");
+    }
+
+    @ApiOperation(value ="重置密码",notes="用户忘记密码之后使用邮箱或手机号进行密码重置")
+    @PutMapping("/resetPassword")
+    public ConvertResult resetPassword(int type,String keyrword,int page,int per_page){
+        return new ConvertResult(0,"删除成功","用户已删除");
+    }
+
+    @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
+    @PutMapping("/unbind")
+    public ConvertResult unbind(int type,String keyrword,int page,int per_page){
+        return new ConvertResult(0,"删除成功","用户已删除");
     }
 
 }

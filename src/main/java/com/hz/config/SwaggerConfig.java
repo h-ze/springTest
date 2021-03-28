@@ -74,7 +74,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("测试swagger-API").description("©2021 Copyright.")
+        return new ApiInfoBuilder().title("swagger-API").description("©2021 Copyright.")
                 // .termsOfServiceUrl("")
                 .contact(new Contact("Starmark", "https://www.baidu.com", "hz15858@163.com")).license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/springfox/springfox/blob/master/LICENSE").version("2.0").build();

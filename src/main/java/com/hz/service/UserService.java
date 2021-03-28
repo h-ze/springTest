@@ -1,11 +1,14 @@
 package com.hz.service;
 
 import com.hz.entity.User;
+import com.hz.entity.UserRoles;
 
 import java.util.List;
 
 public interface UserService {
-    int save(User user);
+    int save(User user,UserRoles userRoles);
+
+    int addUserRoles(UserRoles userRoles);
 
     List<User> findAll();
 

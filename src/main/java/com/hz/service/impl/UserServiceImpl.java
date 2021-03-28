@@ -2,6 +2,7 @@ package com.hz.service.impl;
 
 import com.hz.dao.UserDAO;
 import com.hz.entity.User;
+import com.hz.entity.UserRoles;
 import com.hz.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
     @Override
-    public int save(User user) {
+    public int save(User user,UserRoles userRoles) {
         //user.setId(UUID.randomUUID().toString().replace("-",""));
         user.setId(0);
+        if (userRoles!=null){
+            userRoles.setId(0);
+            userDAO.addUserRoles(userRoles);
+        }
 
         return userDAO.save(user);
+    }
+
+    @Override
+    public int addUserRoles(UserRoles userRoles) {
+        userRoles.setRoleId(0);
+
+        return userDAO.addUserRoles(userRoles);
     }
 
     @Override

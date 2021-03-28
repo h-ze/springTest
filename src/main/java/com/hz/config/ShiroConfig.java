@@ -2,17 +2,14 @@ package com.hz.config;
 
 import com.hz.config.filter.JWTFilter;
 import com.hz.config.realm.ShiroCustomerRealm;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import com.hz.redis.RedisCacheManager;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.slf4j.Logger;
@@ -139,12 +136,12 @@ public class ShiroConfig {
         //开启缓存管理
         //shiroCustomerRealm.setCacheManager(new EhCacheManager());
 
-        /*shiroCustomerRealm.setCacheManager(new RedisCacheManager());
+        shiroCustomerRealm.setCacheManager(new RedisCacheManager());
         shiroCustomerRealm.setCachingEnabled(true);//开启全局缓存
         shiroCustomerRealm.setAuthenticationCachingEnabled(true); //开启认证缓存
         shiroCustomerRealm.setAuthenticationCacheName("authenticationCache");
         shiroCustomerRealm.setAuthorizationCachingEnabled(true); //开启授权缓存
-        shiroCustomerRealm.setAuthorizationCacheName("authorizationCache");*/
+        shiroCustomerRealm.setAuthorizationCacheName("authorizationCache");
 
         return shiroCustomerRealm;
     }

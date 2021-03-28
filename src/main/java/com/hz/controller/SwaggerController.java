@@ -15,7 +15,7 @@ import java.util.Map;
  * swagger测试地址
  */
 @RestController
-@Api(tags = "swagger user接口")
+@Api(tags = "测试接口功能")
 @RequestMapping("/swagger")
 public class SwaggerController {
 
@@ -24,8 +24,8 @@ public class SwaggerController {
     @PostMapping("/addUser")
     @ApiOperation(value ="添加用户的接口",notes="用来添加一个新的用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username",  dataType = "String",value = "用户名", defaultValue = "李四"),
-            @ApiImplicitParam(name = "address", value = "用户地址", defaultValue = "深圳", required = true)
+            @ApiImplicitParam(name = "username", paramType = "form", dataType = "String",value = "用户名", defaultValue = "李四"),
+            @ApiImplicitParam(name = "address", value = "用户地址", defaultValue = "深圳", required = true),
     }
     )
     public String addUser( String username, @RequestParam(required = true) String address) {
@@ -51,7 +51,6 @@ public class SwaggerController {
         map.put("性别","男");
         return map;
     }
-
 
     @PostMapping("/save")
     @ApiOperation("保存用户信息")
