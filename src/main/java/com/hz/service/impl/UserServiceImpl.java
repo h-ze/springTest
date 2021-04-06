@@ -30,24 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String username) {
-        User user = userDAO.getUser(username);
 
-        if(user!=null){
-            return user;
-        }else {
-            return null;
-        }
+        return userDAO.getUser(username);
         //throw new RuntimeException("认证失败");
     }
 
     @Override
     public User getUserByUserId(String userId) {
-        User user = userDAO.getUserById(userId);
-        if(user!=null){
-            return user;
-        }else {
-            return null;
-        }
+        return userDAO.getUserById(userId);
     }
 
     @Override
@@ -57,20 +47,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deleteUser(String userId, String password) {
-        int i = userDAO.deleteUserByOwner(userId, password);
-        return i;
+        return userDAO.deleteUserByOwner(userId, password);
     }
 
     @Override
     public int deleteUser(String userId) {
-        int i = userDAO.deleteUser(userId);
-        return i;
+        return userDAO.deleteUser(userId);
     }
 
     @Override
     public int updateUserPassword(User user) {
-        int i = userDAO.updateUser(user);
-        return i;
+        return userDAO.updateUser(user);
     }
 
 }
