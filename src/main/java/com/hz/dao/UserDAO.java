@@ -1,12 +1,14 @@
 package com.hz.dao;
 
 import com.hz.entity.User;
+import com.hz.entity.UserRoles;
 
 import java.util.List;
 
 
 public interface UserDAO {
     int save(User user);
+    int addUserRoles(UserRoles userRoles);
     List<User> findAll();
     User getUser(String username);
     User getUserById(String userId);

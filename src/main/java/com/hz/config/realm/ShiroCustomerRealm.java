@@ -5,7 +5,6 @@ import com.hz.service.UserService;
 import com.hz.utils.ApplicationContextUtils;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.MyByteSource;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -45,12 +44,12 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
 //        simpleAuthorizationInfo.addRole("admin");
 //        simpleAuthorizationInfo.addStringPermission("user:update");
 
-        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        /*SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRole("admin");
-        return simpleAuthorizationInfo;
+        return simpleAuthorizationInfo;*/
 
         //根据数据库中的用户权限进行添加
-        /*UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
+        UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         Claims claims = JWTUtil.parseJWT(primaryPrincipal);
         String subject = claims.getSubject();
         User rolesByUsername = userService.findRolesByUsername(subject);
@@ -58,11 +57,12 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
         //如果添加缓存之后在该方法下再次请求数据库将不会再向数据库发起请求
         if (!ListUtils.isEmpty(rolesByUsername.getRoles())) {
             SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+            logger.info("权限",rolesByUsername.getRoles());
             rolesByUsername.getRoles().forEach(role-> simpleAuthorizationInfo.addRole(role.getName()));
-            simpleAuthorizationInfo.addRole("admin");
+            //simpleAuthorizationInfo.addRole("admin");
             return simpleAuthorizationInfo;
         }
-        return null;*/
+        return null;
     }
 
     /**

@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hz.dao.UserDAO">
     <insert id="save" parameterType="User">
-        insert into user values (#{id},#{name},#{age},#{bir},#{password},#{salt})
+        insert into user values (#{id},#{name},#{age},#{bir},#{password},#{salt},#{userId})
+    </insert>
+
+    <insert id="addUserRoles" parameterType="UserRoles">
+        insert into t_user_role values (#{id},#{userId},#{roleId})
     </insert>
 
     <select id="findAll" resultType="User">
@@ -10,11 +14,11 @@
     </select>
 
     <select id="getUser" parameterType="User" resultType="User">
-        select id,name,age,bir,password,salt from user where name = #{username}
+        select id,name,age,bir,password,salt,userId from user where name = #{username}
     </select>
 
     <select id="getUserById" parameterType="String" resultType="User">
-        select id,name,age,bir,password,salt from user where userId = #{userId}
+        select id,name,age,bir,password,salt,userId from user where userId = #{userId}
     </select>
 
     <resultMap id="userMap" type="User">
@@ -27,14 +31,14 @@
         </collection>
     </resultMap>
     <select id="findRolesByUsername" parameterType="String" resultMap="userMap">
-        select u.id uid,u.name,r.id,r.name rname from user u left join t_user_role ur on u.id =ur.userid
+        select u.id uid,u.name,r.id,r.name rname from user u left join t_user_role ur on u.userId =ur.userid
         left join t_role r
         on ur.roleid =r.id
         where u.name= #{username}
     </select>
 
     <delete id="deleteUserByOwner" parameterType="String">
-        delete from user where name =#{username} and password =#{password}
+        delete from user where userId =#{userId} and password =#{password}
     </delete>
 
     <delete id="deleteUser" parameterType="String">
