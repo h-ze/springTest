@@ -23,7 +23,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
  */
 @Configuration
 @EnableSwagger2
-//springboot swagger访问地址 http://localhost:8081/springboot/swagger-ui.html
+//springboot swagger访问地址 http://localhost:8082/springboot/swagger-ui.html
 public class SwaggerConfig {
 
     @Bean

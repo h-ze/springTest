@@ -53,19 +53,19 @@ public class FileController {
 
     /**
      * 基本实现上传功能
-     * @param aaa
+     * @param multipartFile
      * @param request
      * @return
      * @throws IOException
      */
     @PostMapping("uploadFile")
-    public String uploadFile(MultipartFile aaa, HttpServletRequest request,HttpSession session) throws IOException {
-        System.out.println(aaa);
+    public String uploadFile(MultipartFile multipartFile, HttpServletRequest request,HttpSession session) throws IOException {
+        System.out.println(multipartFile);
         User user = (User) session.getAttribute("user");
-        String oldFileName = aaa.getOriginalFilename();
-        long size = aaa.getSize();
-        String contentType = aaa.getContentType();
-        String type = aaa.getContentType();
+        String oldFileName = multipartFile.getOriginalFilename();
+        long size = multipartFile.getSize();
+        String contentType = multipartFile.getContentType();
+        String type = multipartFile.getContentType();
 
         String path = ResourceUtils.getURL("classpath:").getPath()+"static/files";
         //日期目录创建
@@ -78,10 +78,10 @@ public class FileController {
         }
         //修改文件名
         String newFileNamePrefix = new SimpleDateFormat("yyyyMMddHHmmssSSS")+UUID.randomUUID().toString();
-        String extension = FilenameUtils.getExtension(aaa.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String newFileName = newFileNamePrefix+"."+extension;
 
-        aaa.transferTo(new File(file,newFileName));
+        multipartFile.transferTo(new File(file,newFileName));
 
 
         UserFile userFile = new UserFile();
@@ -101,7 +101,6 @@ public class FileController {
     @GetMapping("downloadFile")
     public void downloadFile(String openStyle,String id, HttpServletResponse response) throws IOException {
         openStyle = openStyle == null ? "attachment" : openStyle;
-
 
         UserFile fileById = userFileService.findFileById(id);
 
@@ -140,18 +139,16 @@ public class FileController {
         }*/
     }
 
-
-
     /**
      * 基本实现上传功能
-     * @param aaa
+     * @param multipartFile
      * @param request
      * @return
      * @throws IOException
      */
     @PostMapping("upload")
-    public String uploadFiles(MultipartFile aaa, HttpServletRequest request) throws IOException {
-        System.out.println(aaa);
+    public String uploadFiles(MultipartFile multipartFile, HttpServletRequest request) throws IOException {
+        System.out.println(multipartFile);
         String path = ResourceUtils.getURL("classpath:").getPath()+"static/files";
         //日期目录创建
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -163,10 +160,10 @@ public class FileController {
         }
         //修改文件名
         String newFileNamePrefix = new SimpleDateFormat("yyyyMMddHHmmssSSS")+UUID.randomUUID().toString();
-        String extension = FilenameUtils.getExtension(aaa.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String newFileName = newFileNamePrefix+"."+extension;
 
-        aaa.transferTo(new File(file,newFileName));
+        multipartFile.transferTo(new File(file,newFileName));
 
         return "redirect/upload";
     }
