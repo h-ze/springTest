@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -134,14 +135,15 @@ public class UserController {
      * @param password 密码
      * @return ConvertResult对象
      */
+
     @PostMapping(value = "/login")
     @ApiOperation(value ="用户登录",notes="获取用户的token")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", dataType = "String",value = "用户名"/*, defaultValue = "test"*/,required = true),
-            @ApiImplicitParam(name = "password", dataType = "String",value = "用户密码"/*, defaultValue = "123456"*/, required = true)
+            @ApiImplicitParam(name = "username",dataType = "String",value = "用户名"/*, defaultValue = "test"*/,required = true, paramType = "formData"),
+            @ApiImplicitParam(name = "password",dataType = "String",value = "用户密码"/*, defaultValue = "123456"*/, required = true, paramType = "formData")
     })
     @ResponseBody
-    public ConvertResult login(String username ,String password){
+    public ConvertResult login(String username , String password){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -293,25 +295,25 @@ public class UserController {
 
     @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
     @PostMapping("/edit")
-    public ConvertResult updateUserMessage(int type,String keyrword,int page,int per_page){
+    public ConvertResult updateUserMessage(int type,String keyword,int page,int per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
     @ApiOperation(value ="获取用户个人信息",notes="用来获取用户个人信息")
     @GetMapping("/edit")
-    public ConvertResult getUserMessage(int type,String keyrword,int page,int per_page){
+    public ConvertResult getUserMessage(int type,String keyword,int page,int per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
     @ApiOperation(value ="重置密码",notes="用户忘记密码之后使用邮箱或手机号进行密码重置")
     @PutMapping("/resetPassword")
-    public ConvertResult resetPassword(int type,String keyrword,int page,int per_page){
+    public ConvertResult resetPassword(int type,String keyword,int page,int per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
     @PutMapping("/unbind")
-    public ConvertResult unbind(int type,String keyrword,int page,int per_page){
+    public ConvertResult unbind(int type,String keyword,int page,int per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
