@@ -1,6 +1,7 @@
 package com.hz.config.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hz.config.BeanConfig;
 import com.hz.utils.JWTToken;
 import com.hz.utils.JWTUtil;
 import io.jsonwebtoken.*;
@@ -20,12 +21,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
+import static com.hz.config.BeanConfig.isOpenRedis;
+
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
     @Autowired
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private BeanConfig beanConfig;
     /**
      * 如果带有 token，则对 token 进行检查，否则直接通过
      */
@@ -51,7 +57,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
         } else {
             logger.info("token为空");
-            responseError(response, "参数错误,请输入用户token");
+            responseError(response, "参数无效,请输入用户token");
             return false;
         }
         return true;
@@ -67,8 +73,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
-        String token = req.getParameter("token");
-        //String token = req.getHeader("token");
+        //String token = req.getParameter("token");
+        String token = req.getHeader("token");
         return token != null;
     }
 
@@ -78,8 +84,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception{
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getParameter("token");
-        //String token = httpServletRequest.getHeader("token");
+        //String token = httpServletRequest.getParameter("token");
+        String token = httpServletRequest.getHeader("token");
         Claims claims = JWTUtil.parseJWT(token);
 
         Date expiration = claims.getExpiration();
@@ -94,10 +100,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         long expirationTime = expiration.getTime();
         long l = expirationTime - currentTimeMillis;
         logger.info("距离过期时间:"+l);
-        if (l<3600000 && l >0){
-            refreshToken(claims);
-            throw new Exception("刷新token");
+        if (isOpenRedis()){
+            if (l<3600000 && l >0){
+                refreshToken(claims);
+                throw new Exception("刷新token");
+            }
         }
+
 
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         JWTToken jwtToken = new JWTToken(token);

@@ -15,6 +15,7 @@ import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,8 @@ import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.hz.config.BeanConfig.isOpenRedis;
 
 /**
  * 用来整合shiro框架相关的配置项
@@ -33,6 +36,8 @@ public class ShiroConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
 
+    @Autowired
+    private BeanConfig beanConfig;
     /**
      * 添加注解支持
      */
@@ -89,7 +94,11 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/v2/**","anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/user/login","anon");
+        filterChainDefinitionMap.put("/user/user","anon");
+
         filterChainDefinitionMap.put("/user/registerUser","anon");
+        filterChainDefinitionMap.put("/server/server","anon");
+
         filterChainDefinitionMap.put("/unauthorized/**", "anon");
 
         //默认认证界面路径
@@ -136,8 +145,10 @@ public class ShiroConfig {
         //开启缓存管理
         //shiroCustomerRealm.setCacheManager(new EhCacheManager());
 
-        shiroCustomerRealm.setCacheManager(new RedisCacheManager());
-        shiroCustomerRealm.setCachingEnabled(true);//开启全局缓存
+        if (isOpenRedis()){
+            shiroCustomerRealm.setCacheManager(new RedisCacheManager());
+            shiroCustomerRealm.setCachingEnabled(true);//开启全局缓存
+        }
         shiroCustomerRealm.setAuthenticationCachingEnabled(true); //开启认证缓存
         shiroCustomerRealm.setAuthenticationCacheName("authenticationCache");
         shiroCustomerRealm.setAuthorizationCachingEnabled(true); //开启授权缓存

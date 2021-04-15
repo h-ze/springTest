@@ -1,18 +1,12 @@
 package com.hz.controller;
 
-import com.hz.entity.ConvertResult;
-import com.hz.entity.ResultMap;
-import com.hz.entity.User;
-import com.hz.entity.UserRoles;
+import com.hz.entity.*;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.RedisUtil;
 import com.hz.utils.SaltUtil;
 import io.jsonwebtoken.Claims;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.session.Session;
@@ -93,9 +87,14 @@ public class UserController {
      * @return ConvertResult对象
      */
     @ApiOperation(value ="用户注册",notes="用来注册用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username",dataType = "String",value = "用户名",required = true, paramType = "form"),
+            @ApiImplicitParam(name = "password",dataType = "String",value = "用户密码", required = true, paramType = "form"),
+            @ApiImplicitParam(name = "type",dataType = "String",value = "用户类型",required = true,paramType = "form")
+    })
     @PostMapping(value = "/user")
     @ResponseBody
-    public ConvertResult registerUser(@RequestParam("username") String username , @RequestParam("password") String password,@RequestParam("type") int type){
+    public ConvertResult registerUser(String username , @RequestParam("password") String password,@RequestParam("type") int type){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -119,8 +118,6 @@ public class UserController {
             userRoles.setRoleId(type);
             int i = userService.save(addUser,userRoles);
             if (i >0){
-
-
                 return new ConvertResult(0,"注册成功","用户已注册成功");
             }else {
                 return new ConvertResult(0,"注册失败","用户注册失败");
@@ -136,14 +133,14 @@ public class UserController {
      * @return ConvertResult对象
      */
 
-    @PostMapping(value = "/login")
-    @ApiOperation(value ="用户登录",notes="获取用户的token")
+    @PostMapping(value = "/login",consumes = "multipart/form-data")
+    @ApiOperation(value ="用户登录",notes="获取用户的token",response = ConvertResult.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username",dataType = "String",value = "用户名"/*, defaultValue = "test"*/,required = true, paramType = "formData"),
-            @ApiImplicitParam(name = "password",dataType = "String",value = "用户密码"/*, defaultValue = "123456"*/, required = true, paramType = "formData")
+            @ApiImplicitParam(name = "username",dataType = "String",value = "用户名",required = true, paramType = "form"),
+            @ApiImplicitParam(name = "password",dataType = "String",value = "用户密码", required = true, paramType = "form")
     })
     @ResponseBody
-    public ConvertResult login(String username , String password){
+    public ConvertResult login(@RequestPart("username") String username , @RequestPart("password")String password){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -189,13 +186,13 @@ public class UserController {
 
     /**
      * 用户注销
-     * @param password 密码 输入密码是为了二次验证 防止用户误删
+     * @param password 密码 输入密码是为了二次验证 防止用户误删或被恶意删除
      * @return
      */
     @ApiOperation(value ="用户注销",notes="用来注销用户")
     @DeleteMapping("/user")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "password", value = "用户密码", required = true)
+            @ApiImplicitParam(name = "password", value = "用户密码",required = true, paramType="form")
     })
     @ResponseBody
     public ConvertResult deleteUser(String password){
@@ -232,8 +229,8 @@ public class UserController {
     @PutMapping("/password")
     @ApiOperation(value ="修改用户密码",notes="用来修改用户的密码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "password",  dataType = "String",value = "用户名", defaultValue = "李四"),
-            @ApiImplicitParam(name = "newPassword", value = "用户地址", defaultValue = "深圳", required = true)
+            @ApiImplicitParam(name = "password",  dataType = "String",value = "旧密码", paramType = "form",required = true),
+            @ApiImplicitParam(name = "newPassword", dataType = "String",value = "新密码", paramType = "form",required = true)
     })
     @ResponseBody
     public ConvertResult updateUserPassword(String password,String newPassword){
@@ -293,28 +290,65 @@ public class UserController {
     }
 
 
+    //body类型的参数
+    //@RequestBody不能用@ApiImplicitParams注解,不会生效,应该使用 @ApiParam
     @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
     @PostMapping("/edit")
-    public ConvertResult updateUserMessage(int type,String keyword,int page,int per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
+    /*@ApiImplicitParams({
+            @ApiImplicitParam(name = "body",value = "用户名",paramType = "body",dataType = "UserMessage",dataTypeClass = UserMessage.class,required = true)
+    })*/
+    @ResponseBody
+    public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true)UserMessage userMessage){
+
+        logger.info("用户信息:",userMessage);
+        String fullName = userMessage.getFullName();
+        if (fullName ==null){
+            return new ConvertResult(999999,"参数错误","fullName不能为空");
+
+        }
+        logger.info("用户信息："+fullName);
+        return new ConvertResult(0,"修改成功","用户已修改");
     }
 
     @ApiOperation(value ="获取用户个人信息",notes="用来获取用户个人信息")
     @GetMapping("/edit")
-    public ConvertResult getUserMessage(int type,String keyword,int page,int per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
+    @ResponseBody
+    public ConvertResult getUserMessage(){
+        return new ConvertResult(0,"获取成功","用户已获取");
     }
 
     @ApiOperation(value ="重置密码",notes="用户忘记密码之后使用邮箱或手机号进行密码重置")
     @PutMapping("/resetPassword")
-    public ConvertResult resetPassword(int type,String keyword,int page,int per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email",value = "用户邮箱",paramType = "query",dataType = "String",required = true)
+    })
+    public ConvertResult resetPassword(String email){
+        logger.info("用户邮箱:"+email);
+        return new ConvertResult(0,"重置成功","密码已重置,请前往邮箱点击重置链接生效重置操作");
     }
 
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
     @PutMapping("/unbind")
-    public ConvertResult unbind(int type,String keyword,int page,int per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "boolean",required = true)
+    })
+    public ConvertResult unbind(@RequestPart boolean type){
+        logger.info("type:"+type);
+        return new ConvertResult(0,"解绑成功","用户已解绑");
+    }
+
+    @ApiOperation(value ="验证用户是否已注册",notes="验证用户是否已注册")
+    @GetMapping("/exists")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email",value = "邮箱",paramType = "query",dataType = "String",required = true),
+            @ApiImplicitParam(name = "phone_number",value = "手机号",paramType = "query",dataType = "String",required = true)
+
+    })
+    @ResponseBody
+    public ConvertResult exists(@PathParam("email") String email,@PathParam("phone_number") String phone_number){
+        logger.info("email:"+email);
+        logger.info("phone_number:"+phone_number);
+        return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
 }

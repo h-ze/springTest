@@ -30,6 +30,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 文件处理模块
+ */
 @Controller
 @RequestMapping("file")
 public class FileController {

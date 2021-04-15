@@ -2,10 +2,7 @@ package com.hz.controller;
 
 
 import com.hz.entity.ConvertResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +28,8 @@ public class OperatorLogController {
 
     }
     )
+    @ApiResponses({@ApiResponse(code = 401,message = "未被授权"),
+            @ApiResponse(code =404,message = "路径错误")})
     public ConvertResult addLog(@RequestHeader("appName") String appName,
                                 @RequestParam String appToken,
                                 @PathVariable("email") String email,
@@ -49,14 +48,30 @@ public class OperatorLogController {
 
     @GetMapping("/log")
     @ApiOperation(value ="获取用户的操作日志",notes="根据类型获取用户的操作日志")
-    public ConvertResult getLog(int type, String keyrword, int page, int per_page){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "access_token", paramType = "query", dataType = "String",value = "Access Token",required = true),
+            @ApiImplicitParam(name = "begin_date", paramType = "query", dataType = "String",value = "开始日期时间，格式：2018-12-17 08:08:08",required = true),
+            @ApiImplicitParam(name = "end_date", paramType = "query", dataType = "String",value = "结束日期时间，格式：2018-12-17 08:08:08",required = true),
+            @ApiImplicitParam(name = "email", paramType = "query", dataType = "String",value = "操作人员邮箱"),
+            @ApiImplicitParam(name = "event", paramType = "query", dataType = "String",value = "日志事件"),
+            @ApiImplicitParam(name = "is_success", paramType = "query", dataType = "boolean",value = "用户操作是否成功"),
+            @ApiImplicitParam(name = "page", paramType = "query", dataType = "Integer",value = "当前页码"),
+            @ApiImplicitParam(name = "per_page", paramType = "query", dataType = "Integer",value = "每页数据量"),
+            @ApiImplicitParam(name = "log_type", paramType = "query", dataType = "Integer",value = "选择展示的日志面板，0=文档日志 1=操作日志 2=登录日志，默认是0"),
+
+    })
+    public ConvertResult getLog(String access_token,
+                                @PathVariable("begin_date")String begin_date,
+                                @PathVariable("end_date")String end_date,
+                                @PathVariable("email")String email,
+                                @PathVariable("event")String event,
+                                @PathVariable("is_success")boolean is_success,
+                                @PathVariable("page")Integer page,
+                                @PathVariable("per_page")Integer per_page,
+                                @PathVariable("log_type")Integer log_type
+    ) {
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
-    @DeleteMapping("/log")
-    @ApiOperation(value ="删除用户的操作日志",notes="删除当前用户的操作日志")
-    public ConvertResult deleteLog(int type, String keyrword, int page, int per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
-    }
 
 }

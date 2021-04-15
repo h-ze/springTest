@@ -12,4 +12,8 @@ public class BeanConfig {
     public Calendar getCalendar(){
         return Calendar.getInstance();
     }
+
+    public static Boolean isOpenRedis(){
+        return false;
+    }
 }
