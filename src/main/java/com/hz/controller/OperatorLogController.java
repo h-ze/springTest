@@ -41,7 +41,7 @@ public class OperatorLogController {
                                 @RequestParam String ip,
                                 @RequestParam String code,
                                 @RequestParam String msg,
-                                @RequestParam boolean is_success,
+                                @RequestParam Boolean is_success,
                                 @RequestParam String note){
         return new ConvertResult(0,"删除成功","用户已删除");
     }

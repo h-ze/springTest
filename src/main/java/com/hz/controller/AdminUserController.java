@@ -6,6 +6,8 @@ import com.hz.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.SaltUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
@@ -119,8 +121,15 @@ public class AdminUserController {
      */
     @ApiOperation(value ="用户列表",notes="获取各状态下的成员列表")
     @GetMapping("/account")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type",dataType = "int",value = "任务状态 0=申请中;1=使用中;2=已拒绝;3=已冻结", paramType = "query"),
+            @ApiImplicitParam(name = "keyword",dataType = "String",value = "关键词搜索 搜索email和full_name的并集", paramType = "query"),
+            @ApiImplicitParam(name = "page",dataType = "int",value = "页码", paramType = "query"),
+            @ApiImplicitParam(name = "per_page",dataType = "int",value = "每页数据量", paramType = "query")
+    }
+    )
     @RequiresRoles("admin")
-    public ConvertResult getAccount(int type,String keyword,int page,int per_page){
+    public ConvertResult getAccount(Integer type,String keyword,Integer page,Integer per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
     }
 
@@ -141,7 +150,7 @@ public class AdminUserController {
     @ApiOperation(value ="配置个人级别单双因子",notes="用来配置个人级别的单双因子，控制cas登录验证")
     @PutMapping("/verify")
     @RequiresRoles("admin")
-    public ConvertResult verifyCas(int type,String keyrword,int page,int per_page){
+    public ConvertResult verifyCas(Integer type,String keyword,Integer page,Integer per_page){
         return new ConvertResult(0,"删除成功","用户已删除");
 
     }

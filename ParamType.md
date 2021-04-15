@@ -9,3 +9,6 @@
 无任何注解consumes包含multipart/form-data且接口类型为post 	            formData
 无任何注解且不满足上述2个条件 	                                        query
 不符合上述任何条件 	                                                    body
+
+
+@RequestParam注解用来处理Content-Type: 为 application/x-www-form-urlencoded编码的内容。提交方式为get或post。

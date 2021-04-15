@@ -25,7 +25,7 @@ public class AssistantAdminController {
     @PutMapping("encryptConfig")
     @ApiOperation(value ="设置加密算法配置",notes="主副管理员则有权限读取修改，成员只读")
     @RequiresRoles("assistantAdmin")
-    public ConvertResult setEncryptConfig(@RequestParam("encryptType")int encryptType){
+    public ConvertResult setEncryptConfig(@RequestParam("encryptType")Integer encryptType){
         logger.debug("encryptType",encryptType);
         return new ConvertResult();
     }

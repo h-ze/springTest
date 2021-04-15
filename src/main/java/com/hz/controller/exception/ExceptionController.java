@@ -3,10 +3,12 @@ package com.hz.controller.exception;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionController {
 
+
     @ExceptionHandler
     public JSONObject handleException(Exception e){
         JSONObject jsonObject = new JSONObject(true);
@@ -30,12 +33,31 @@ public class ExceptionController {
         return jsonObject;
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public JSONObject HttpMediaTypeNotSupportedException(Exception e){
+        JSONObject jsonObject = new JSONObject(true);
+        jsonObject.put("code","999999");
+        jsonObject.put("msg","参数缺失,类型错误");
+        jsonObject.put("data","[]");
+        return jsonObject;
+    }
+
+
     @ExceptionHandler(ShiroException.class)
     public JSONObject shiroHandleException(Exception e){
         JSONObject jsonObject = new JSONObject(true);
         jsonObject.put("code","999999");
         jsonObject.put("msg","认证失败");
         jsonObject.put("message",e.getMessage());
+        return jsonObject;
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public JSONObject shiroHandleException(UnauthorizedException e){
+        JSONObject jsonObject = new JSONObject(true);
+        jsonObject.put("code","999999");
+        jsonObject.put("msg","认证失败");
+        jsonObject.put("message","您没有权限访问当前接口");
         return jsonObject;
     }
 

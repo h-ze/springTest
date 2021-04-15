@@ -36,8 +36,6 @@ public class ShiroConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
 
-    @Autowired
-    private BeanConfig beanConfig;
     /**
      * 添加注解支持
      */

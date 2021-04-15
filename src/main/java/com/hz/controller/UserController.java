@@ -1,5 +1,6 @@
 package com.hz.controller;
 
+import com.hz.config.MqttPushClient;
 import com.hz.entity.*;
 import com.hz.service.UserService;
 import com.hz.utils.JWTUtil;
@@ -11,6 +12,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +72,6 @@ public class UserController {
     public String findAll(HttpServletRequest request,Model model){
         model.addAttribute("name","heze");
         model.addAttribute("username","<a href=''>test </a>");
-        //List<User> users = Arrays.asList(new User("1", "zhangsan", 24, new Date()), new User("2", "lisi", 24, new Date()));
-        //model.addAttribute("users", users);
         List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
 
         model.addAttribute("user", new User(1, "zhangsan", 22, new Date()));
@@ -94,7 +94,7 @@ public class UserController {
     })
     @PostMapping(value = "/user")
     @ResponseBody
-    public ConvertResult registerUser(String username , @RequestParam("password") String password,@RequestParam("type") int type){
+    public ConvertResult registerUser(String username , @RequestParam("password") String password,@RequestParam("type") Integer type){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -111,10 +111,9 @@ public class UserController {
             long l = System.currentTimeMillis();
             String value = String.valueOf(l);
             addUser.setUserId(value);
+            logger.info("id:"+value);
             UserRoles userRoles = new UserRoles();
             userRoles.setUserId(value);
-            //logger.info(value);
-            //logger.info();
             userRoles.setRoleId(type);
             int i = userService.save(addUser,userRoles);
             if (i >0){
@@ -171,7 +170,7 @@ public class UserController {
     @ApiOperation(value ="退出登录",notes="使token过期")
     @PutMapping("/logout")
     @ResponseBody
-    public ConvertResult logout(){
+    public ConvertResult logout() throws MqttException {
         Subject subject = SecurityUtils.getSubject();
         String subjectPrincipal = (String) subject.getPrincipal();
         logger.info("退出登录前的token:"+subjectPrincipal);
@@ -180,6 +179,10 @@ public class UserController {
         logger.info("退出登录的token:"+principal);
 
         //需要删除redis里的关于登录的key
+
+        String kdTopic = "topic1";
+        MqttPushClient.getInstance().publish(kdTopic, "稍微来点鸡血");
+        //return new ResponseEntity<>("OK", HttpStatus.OK);
 
         return new ConvertResult(0,"退出登录","退出登录成功");
     }
@@ -263,18 +266,9 @@ public class UserController {
 
     @ApiOperation(value ="测试用户权限",notes="用来测试是否有管理员权限")
     @GetMapping(value = "testRoles")
-    //@RequiresPermissions("")
     @RequiresRoles("admin")
     @ResponseBody
-    public ConvertResult testRoles(HttpServletRequest request){
-        Claims calms = (Claims)request.getAttribute("claims");
-//        Object roles = calms.get("roles");
-//        logger.info(roles.toString());
-        //logger.info("roles",roles);
-        //logger.info(calms.toString());
-        //User user = userService.getUser("test");
-        Session session = SecurityUtils.getSubject().getSession();
-        logger.info(session.toString());
+    public ConvertResult testRoles(){
         return new ConvertResult(0,"测试权限","权限测试成功");
     }
 
@@ -289,14 +283,10 @@ public class UserController {
         return resultMap.success().code(401).message(message);
     }
 
-
     //body类型的参数
     //@RequestBody不能用@ApiImplicitParams注解,不会生效,应该使用 @ApiParam
     @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
     @PostMapping("/edit")
-    /*@ApiImplicitParams({
-            @ApiImplicitParam(name = "body",value = "用户名",paramType = "body",dataType = "UserMessage",dataTypeClass = UserMessage.class,required = true)
-    })*/
     @ResponseBody
     public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true)UserMessage userMessage){
 
@@ -304,7 +294,6 @@ public class UserController {
         String fullName = userMessage.getFullName();
         if (fullName ==null){
             return new ConvertResult(999999,"参数错误","fullName不能为空");
-
         }
         logger.info("用户信息："+fullName);
         return new ConvertResult(0,"修改成功","用户已修改");
@@ -313,8 +302,12 @@ public class UserController {
     @ApiOperation(value ="获取用户个人信息",notes="用来获取用户个人信息")
     @GetMapping("/edit")
     @ResponseBody
-    public ConvertResult getUserMessage(){
-        return new ConvertResult(0,"获取成功","用户已获取");
+    public ResponseMessageWithoutException<User> getUserMessage(){
+        String principal = (String) SecurityUtils.getSubject().getPrincipal();
+        Claims claims = jwtUtil.parseJWT(principal);
+        String userId = (String)claims.get("userId");
+        User user = userService.getUserByUserId(userId);
+        return new ResponseMessageWithoutException<>(0, "获取成功", user, "用户信息已获取");
     }
 
     @ApiOperation(value ="重置密码",notes="用户忘记密码之后使用邮箱或手机号进行密码重置")
@@ -330,9 +323,9 @@ public class UserController {
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
     @PutMapping("/unbind")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "boolean",required = true)
+            @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "string",allowableValues = "qq,wechat", allowMultiple = false,required = true)
     })
-    public ConvertResult unbind(@RequestPart boolean type){
+    public ConvertResult unbind(@RequestPart String type){
         logger.info("type:"+type);
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
@@ -345,7 +338,7 @@ public class UserController {
 
     })
     @ResponseBody
-    public ConvertResult exists(@PathParam("email") String email,@PathParam("phone_number") String phone_number){
+    public ConvertResult exists(@RequestParam/*@PathParam("email") */String email,@RequestParam/*@PathParam("phone_number")*/ String phone_number){
         logger.info("email:"+email);
         logger.info("phone_number:"+phone_number);
         return new ConvertResult(0,"解绑成功","用户已解绑");
