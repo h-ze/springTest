@@ -346,8 +346,6 @@ public class UserController {
     public ConvertResult exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){
         logger.info("email:"+email);
         logger.info("phone_number:"+phone_number);
-        HttpResult httpResult = httpsUtils.doGet(new Server("https://online.cpdf360.cn"), "https://online.cpdf360.cn:443/api/user/email-by-phone?access-token=607806b2b502a35b191b586c&phone_number=18236581750", null);
-        logger.info("结果:"+httpResult.getResult());
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
