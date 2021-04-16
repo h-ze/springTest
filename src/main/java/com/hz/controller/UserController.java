@@ -175,7 +175,7 @@ public class UserController {
     @ApiOperation(value ="退出登录",notes="使token过期")
     @PutMapping("/logout")
     @ResponseBody
-    public ConvertResult logout() throws MqttException {
+    public ConvertResult logout() {
         Subject subject = SecurityUtils.getSubject();
         String subjectPrincipal = (String) subject.getPrincipal();
         logger.info("退出登录前的token:"+subjectPrincipal);
@@ -326,21 +326,21 @@ public class UserController {
     }
 
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
-    @PutMapping(value = "/unbind")
+    @PutMapping(value = "/unbind",consumes = "application/x-www-form-urlencoded")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "string",allowableValues = "qq,wechat", allowMultiple = false,required = true)
     })
-    public ConvertResult unbind(@RequestPart String type){
+    @ResponseBody
+    public ConvertResult unbind(@RequestParam String type){
         logger.info("type:"+type);
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
     @ApiOperation(value ="验证用户是否已注册",notes="验证用户是否已注册")
-    @GetMapping(value = "/exists")
+    @GetMapping(value = "/exists",consumes = "application/x-www-form-urlencoded")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "email",value = "邮箱",paramType = "query",dataType = "String",required = true),
             @ApiImplicitParam(name = "phone_number",value = "手机号",paramType = "query",dataType = "String",required = true)
-
     })
     @ResponseBody
     public ConvertResult exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){

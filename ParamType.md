@@ -10,6 +10,13 @@
 无任何注解且不满足上述2个条件 	                                        query
 不符合上述任何条件 	                                                    body
 
-
+@RequestParam：将请求参数绑定到你控制器的方法参数上（是springmvc中接收普通参数的注解）
 @RequestParam注解用来处理Content-Type: 为 application/x-www-form-urlencoded编码的内容。提交方式为get或post。
 @RequestPart这个注解用在multipart/form-data表单提交请求的方法上。(一般用于文件上传)
+
+1.application/x-www-form-urlencoded
+GET方式，会将表单中的数据（键值对）经过urlencode编码后追加到url中。
+POST方式，会将表单中的数据经过urlencode编码后放在request body 中。
+2.multipart/form-data
+当需要在表单内上传文件时（二进制流数据）时，就需要使用multipart/form-data 编码方式。    
+    
