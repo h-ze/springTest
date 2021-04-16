@@ -12,3 +12,4 @@
 
 
 @RequestParam注解用来处理Content-Type: 为 application/x-www-form-urlencoded编码的内容。提交方式为get或post。
+@RequestPart这个注解用在multipart/form-data表单提交请求的方法上。(一般用于文件上传)

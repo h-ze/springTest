@@ -12,6 +12,7 @@ public class UserMessage implements Serializable {
     private String username;
 
     @ApiModelProperty(value = "用户全名")
+    //@NotEmpty(message = "ID不能为空")
     private String fullName;
 
     public UserMessage() {

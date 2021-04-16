@@ -3,6 +3,7 @@ package com.hz.controller;
 import com.hz.config.MqttPushClient;
 import com.hz.entity.*;
 import com.hz.service.UserService;
+import com.hz.utils.HttpsUtils;
 import com.hz.utils.JWTUtil;
 import com.hz.utils.RedisUtil;
 import com.hz.utils.SaltUtil;
@@ -43,6 +44,9 @@ public class UserController {
 
     @Autowired
     private ResultMap resultMap;
+
+    @Autowired
+    private HttpsUtils httpsUtils;
 
     //@ResponseBody
     @GetMapping("/findAll")
@@ -131,15 +135,16 @@ public class UserController {
      * @param password 密码
      * @return ConvertResult对象
      */
-
-    @PostMapping(value = "/login",consumes = "multipart/form-data")
+    /*multipart/form-data*/
+    @PostMapping(value = "/login",consumes = "application/x-www-form-urlencoded")
     @ApiOperation(value ="用户登录",notes="获取用户的token",response = ConvertResult.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username",dataType = "String",value = "用户名",required = true, paramType = "form"),
             @ApiImplicitParam(name = "password",dataType = "String",value = "用户密码", required = true, paramType = "form")
     })
+    //@RequestPart
     @ResponseBody
-    public ConvertResult login(@RequestPart("username") String username , @RequestPart("password")String password){
+    public ConvertResult login(@RequestParam("username") String username , @RequestParam("password")String password){
         logger.info(username);
         logger.info(password);
         User user = userService.getUser(username);
@@ -290,7 +295,7 @@ public class UserController {
     @ResponseBody
     public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true)UserMessage userMessage){
 
-        logger.info("用户信息:",userMessage);
+        logger.info("用户信息:"+userMessage);
         String fullName = userMessage.getFullName();
         if (fullName ==null){
             return new ConvertResult(999999,"参数错误","fullName不能为空");
@@ -321,7 +326,7 @@ public class UserController {
     }
 
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
-    @PutMapping("/unbind")
+    @PutMapping(value = "/unbind")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "string",allowableValues = "qq,wechat", allowMultiple = false,required = true)
     })
@@ -331,16 +336,18 @@ public class UserController {
     }
 
     @ApiOperation(value ="验证用户是否已注册",notes="验证用户是否已注册")
-    @GetMapping("/exists")
+    @GetMapping(value = "/exists")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "email",value = "邮箱",paramType = "query",dataType = "String",required = true),
             @ApiImplicitParam(name = "phone_number",value = "手机号",paramType = "query",dataType = "String",required = true)
 
     })
     @ResponseBody
-    public ConvertResult exists(@RequestParam/*@PathParam("email") */String email,@RequestParam/*@PathParam("phone_number")*/ String phone_number){
+    public ConvertResult exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){
         logger.info("email:"+email);
         logger.info("phone_number:"+phone_number);
+        HttpResult httpResult = httpsUtils.doGet(new Server("https://online.cpdf360.cn"), "https://online.cpdf360.cn:443/api/user/email-by-phone?access-token=607806b2b502a35b191b586c&phone_number=18236581750", null);
+        logger.info("结果:"+httpResult.getResult());
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
