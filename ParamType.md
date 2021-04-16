@@ -20,3 +20,6 @@ POST方式，会将表单中的数据经过urlencode编码后放在request body 
 2.multipart/form-data
 当需要在表单内上传文件时（二进制流数据）时，就需要使用multipart/form-data 编码方式。    
     
+    
+什么是restful风格
+http协议具体内容
