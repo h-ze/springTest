@@ -6,16 +6,14 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 @Configuration
 public class MqttPushClient {
     private static final Logger logger = LoggerFactory.getLogger(MqttPushClient.class);
 
-    private String url = "tcp://127.0.0.1:61614";
+    private String url = "tcp://127.0.0.1:8083";
     private String clientId = "mqttProducer";
 
 
@@ -42,7 +40,7 @@ public class MqttPushClient {
 
 
     public MqttPushClient() {
-        //connect();
+        connect();
     }
 
     private MqttClient client;
@@ -58,11 +56,11 @@ public class MqttPushClient {
             // 设置连接的用户名
             options.setUserName("admin");
             // 设置连接的密码
-            options.setPassword("password".toCharArray());
+            options.setPassword("public".toCharArray());
             //boolean b = StringUtils.split("tcp://localhost:61613", ",") != null;
 
-            String[] strings = new String[]{"tcp://127.0.0.1:61614"};
-            options.setServerURIs(strings);
+            String[] strings = new String[]{"tcp://127.0.0.1:8083"};
+            //options.setServerURIs(strings);
             // 设置超时时间 单位为秒
             options.setConnectionTimeout(100);
             // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送心跳判断客户端是否在线，但这个方法并没有重连的机制
