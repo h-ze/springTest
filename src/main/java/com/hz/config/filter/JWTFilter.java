@@ -86,6 +86,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception{
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         //String token = httpServletRequest.getParameter("token");
+
         String token = httpServletRequest.getHeader("token");
 
         if (token==null || token.isEmpty()){
