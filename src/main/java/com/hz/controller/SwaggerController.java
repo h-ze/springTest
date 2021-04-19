@@ -35,9 +35,7 @@ public class SwaggerController {
         user.setAge(18);
         user.setBir(new Date());
         user.setPassword("123456");
-        //userService.save(user);
         return "success";
-        //return new RespBean();
     }
 
     @GetMapping("/findUserById")

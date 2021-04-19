@@ -30,8 +30,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Autowired
     private JWTUtil jwtUtil;
 
-    @Autowired
-    private BeanConfig beanConfig;
     /**
      * 如果带有 token，则对 token 进行检查，否则直接通过
      */
@@ -75,6 +73,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest req = (HttpServletRequest) request;
         //String token = req.getParameter("token");
         String token = req.getHeader("token");
+        if (token==null || token.isEmpty()){
+            token = req.getParameter("token");
+        }
         return token != null;
     }
 
@@ -86,6 +87,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         //String token = httpServletRequest.getParameter("token");
         String token = httpServletRequest.getHeader("token");
+
+        if (token==null || token.isEmpty()){
+            token = httpServletRequest.getParameter("token");
+        }
+
         Claims claims = JWTUtil.parseJWT(token);
 
         Date expiration = claims.getExpiration();

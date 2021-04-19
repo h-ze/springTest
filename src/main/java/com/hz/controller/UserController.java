@@ -11,9 +11,7 @@ import io.jsonwebtoken.Claims;
 import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @Api(tags = "用户管理接口")
@@ -65,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("findAllJsp")
-    public String findAllJsp(HttpServletRequest request, Model model){
+    public String findAllJsp(Model model){
         model.addAttribute("name","heze");
         List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
         model.addAttribute("users", users);
@@ -73,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("findAllByGThymeleaf")
-    public String findAll(HttpServletRequest request,Model model){
+    public String findAll(Model model){
         model.addAttribute("name","heze");
         model.addAttribute("username","<a href=''>test </a>");
         List<User> users = Arrays.asList(new User(1, "zhangsan", 24, new Date()), new User(2, "lisi", 24, new Date()));
@@ -113,11 +112,11 @@ public class UserController {
             addUser.setBir(new Date());
             addUser.setAge(25);
             long l = System.currentTimeMillis();
-            String value = String.valueOf(l);
-            addUser.setUserId(value);
-            logger.info("id:"+value);
+            String userId = String.valueOf(l);
+            addUser.setUserId(userId);
+            logger.info("id:"+userId);
             UserRoles userRoles = new UserRoles();
-            userRoles.setUserId(value);
+            userRoles.setUserId(userId);
             userRoles.setRoleId(type);
             int i = userService.save(addUser,userRoles);
             if (i >0){
@@ -195,7 +194,7 @@ public class UserController {
     /**
      * 用户注销
      * @param password 密码 输入密码是为了二次验证 防止用户误删或被恶意删除
-     * @return
+     * @return ConvertResult对象
      */
     @ApiOperation(value ="用户注销",notes="用来注销用户")
     @DeleteMapping("/user")
@@ -232,7 +231,7 @@ public class UserController {
      * 修改密码
      * @param password 原密码
      * @param newPassword 新密码(前端要进行二次密码的比对)
-     * @return
+     * @return ConvertResult对象
      */
     @PutMapping("/password")
     @ApiOperation(value ="修改用户密码",notes="用来修改用户的密码")
@@ -269,6 +268,10 @@ public class UserController {
         }
     }
 
+    /**
+     * 测试用户权限
+     * @return ConvertResult对象
+     */
     @ApiOperation(value ="测试用户权限",notes="用来测试是否有管理员权限")
     @GetMapping(value = "testRoles")
     @RequiresRoles("admin")
@@ -277,19 +280,33 @@ public class UserController {
         return new ConvertResult(0,"测试权限","权限测试成功");
     }
 
+    /**
+     * test
+     * @return ConvertResult对象
+     */
     @GetMapping(value = "test")
     @ResponseBody
     public ConvertResult test(){
         return new ConvertResult(0,"测试权限1","权限测试成功");
     }
 
+    /**
+     *  /unauthorized/{message
+     * @param message 信息
+     * @return ResultMap对象
+     */
     @RequestMapping(path = "/unauthorized/{message}")
-    public ResultMap unauthorized(@PathVariable String message) throws UnsupportedEncodingException {
+    public ResultMap unauthorized(@PathVariable String message) {
         return resultMap.success().code(401).message(message);
     }
 
     //body类型的参数
     //@RequestBody不能用@ApiImplicitParams注解,不会生效,应该使用 @ApiParam
+    /**
+     * 编辑用户个人信息
+     * @param userMessage 用户个人信息
+     * @return ConvertResult对象
+     */
     @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
     @PostMapping("/edit")
     @ResponseBody
@@ -304,6 +321,10 @@ public class UserController {
         return new ConvertResult(0,"修改成功","用户已修改");
     }
 
+    /**
+     * 获取用户个人信息
+     * @return ResponseMessageWithoutException<User>对象
+     */
     @ApiOperation(value ="获取用户个人信息",notes="用来获取用户个人信息")
     @GetMapping("/edit")
     @ResponseBody
@@ -315,6 +336,11 @@ public class UserController {
         return new ResponseMessageWithoutException<>(0, "获取成功", user, "用户信息已获取");
     }
 
+    /**
+     * 重置密码
+     * @param email 用户邮箱
+     * @return ConvertResult对象
+     */
     @ApiOperation(value ="重置密码",notes="用户忘记密码之后使用邮箱或手机号进行密码重置")
     @PutMapping("/resetPassword")
     @ApiImplicitParams({
@@ -325,10 +351,15 @@ public class UserController {
         return new ConvertResult(0,"重置成功","密码已重置,请前往邮箱点击重置链接生效重置操作");
     }
 
+    /**
+     * 解绑qq或微信
+     * @param type 解绑类型
+     * @return ConvertResult对象
+     */
     @ApiOperation(value ="解绑qq或微信",notes="用户解绑第三方微信或qq快捷登录方式")
     @PutMapping(value = "/unbind",consumes = "application/x-www-form-urlencoded")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "string",allowableValues = "qq,wechat", allowMultiple = false,required = true)
+            @ApiImplicitParam(name = "type",value = "qq or wechat",paramType = "form",dataType = "string",allowableValues = "qq,wechat", required = true)
     })
     @ResponseBody
     public ConvertResult unbind(@RequestParam String type){
@@ -336,8 +367,14 @@ public class UserController {
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
+    /**
+     * 验证用户是否已注册
+     * @param email 邮箱
+     * @param phone_number 手机号
+     * @return ConvertResult对象
+     */
     @ApiOperation(value ="验证用户是否已注册",notes="验证用户是否已注册")
-    @GetMapping(value = "/exists",consumes = "application/x-www-form-urlencoded")
+    @GetMapping(value = "/exists"/*,consumes = "application/x-www-form-urlencoded"*/)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "email",value = "邮箱",paramType = "query",dataType = "String",required = true),
             @ApiImplicitParam(name = "phone_number",value = "手机号",paramType = "query",dataType = "String",required = true)
