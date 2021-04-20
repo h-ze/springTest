@@ -1,23 +1,24 @@
 package com.hz.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.WebSocketMapUtil;
-import io.jsonwebtoken.Claims;
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.websocket.*;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 //@Slf4j
+
+/**
+ * websocket
+ */
 @Component
 @ServerEndpoint(value = "/websocket/{name}")
 public class WebSocket {

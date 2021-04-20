@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * mqtt服务端发送消息
+ */
 @Configuration
 public class MqttPushClient {
     private static final Logger logger = LoggerFactory.getLogger(MqttPushClient.class);
 
-    private String url = "tcp://127.0.0.1:8083";
-    private String clientId = "mqttProducer";
+    private String url = "ws://127.0.0.1:8083/mqtt";
+    private String clientId = "mqttjs_9e836be7";
 
 
     private static final byte[] WILL_DATA;
@@ -59,14 +62,14 @@ public class MqttPushClient {
             options.setPassword("public".toCharArray());
             //boolean b = StringUtils.split("tcp://localhost:61613", ",") != null;
 
-            String[] strings = new String[]{"tcp://127.0.0.1:8083"};
-            //options.setServerURIs(strings);
+            String[] strings = new String[]{"ws://127.0.0.1:8083/mqtt"};
+            options.setServerURIs(strings);
             // 设置超时时间 单位为秒
-            options.setConnectionTimeout(100);
+            options.setConnectionTimeout(1000);
             // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送心跳判断客户端是否在线，但这个方法并没有重连的机制
             options.setKeepAliveInterval(20);
             // 设置“遗嘱”消息的话题，若客户端与服务器之间的连接意外中断，服务器将发布客户端的“遗嘱”消息。
-            options.setWill("willTopic", WILL_DATA, 2, false);
+            options.setWill("qq", WILL_DATA, 2, false);
             client.setCallback(new PushCallback());
             client.connect(options);
         } catch (MqttException e) {
