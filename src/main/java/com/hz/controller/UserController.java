@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -184,7 +183,7 @@ public class UserController {
 
         //需要删除redis里的关于登录的key
 
-        String kdTopic = "topic1";
+        String kdTopic = "pos_message_all";
         MqttPushClient.getInstance().publish(kdTopic, "稍微来点鸡血");
         //return new ResponseEntity<>("OK", HttpStatus.OK);
 
