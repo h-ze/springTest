@@ -1,27 +1,21 @@
 package com.hz.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hz.utils.JWTUtil;
-import com.hz.utils.WebSocketMapUtil;
-import io.jsonwebtoken.Claims;
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 //@Slf4j
 @Component
 @ServerEndpoint(value = "/websocket/{name}")
-public class WebSocket {
-    private static final Logger log = LoggerFactory.getLogger(WebSocket.class);
+public class WebSocketController {
+    private static final Logger log = LoggerFactory.getLogger(WebSocketController.class);
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -39,7 +33,7 @@ public class WebSocket {
     /**
      *  用于存所有的连接服务的客户端，这个对象存储是安全的
      */
-    private static ConcurrentHashMap<String,WebSocket> webSocketSet = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, WebSocketController> webSocketSet = new ConcurrentHashMap<>();
 
 
     @OnOpen
@@ -78,7 +72,7 @@ public class WebSocket {
     public void GroupSending(String message){
         for (String name : webSocketSet.keySet()){
             try {
-                webSocketSet.get(name).session.getBasicRemote().sendText("服务端发送"/*message*/);
+                webSocketSet.get(name).session.getBasicRemote().sendText(message);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -92,7 +86,7 @@ public class WebSocket {
      */
     public void AppointSending(String name,String message){
         try {
-            webSocketSet.get(name).session.getBasicRemote().sendText("服务端发送"/*message*/);
+            webSocketSet.get(name).session.getBasicRemote().sendText(message);
         }catch (Exception e){
             e.printStackTrace();
         }
