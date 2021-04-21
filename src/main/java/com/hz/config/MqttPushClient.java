@@ -1,7 +1,7 @@
 package com.hz.config;
 
 
-import com.hz.PushCallback;
+import com.hz.utils.PushCallback;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;

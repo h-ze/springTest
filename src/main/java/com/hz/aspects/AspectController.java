@@ -16,7 +16,7 @@ import org.springframework.core.annotation.Order;
 @Configuration
 //order加到类上才生效
 @Order(1)
-public class MyAspect {
+public class AspectController {
     //前置通知方法 在目标方法执行之前执行操作
     @Before("within(com.hz..service.impl.*ServiceImpl)")
     public void before(JoinPoint joinPoint){

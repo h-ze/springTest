@@ -1,20 +1,14 @@
-package com.hz.controller.exception;
+package com.hz.exception;
 
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.UnauthorizedException;
-import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 异常处理逻辑

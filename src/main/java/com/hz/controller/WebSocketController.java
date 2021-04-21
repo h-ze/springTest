@@ -1,9 +1,8 @@
 package com.hz.controller;
 
-import com.hz.utils.JWTUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -14,18 +13,16 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.ConcurrentHashMap;
 
-//@Slf4j
 
 /**
  * websocket
  */
+@Slf4j
 @Component
 @ServerEndpoint(value = "/websocket/{name}")
 public class WebSocketController {
-    private static final Logger log = LoggerFactory.getLogger(WebSocketController.class);
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
     /**
      *  与某个客户端的连接对话，需要通过它来给客户端发送消息
@@ -45,38 +42,40 @@ public class WebSocketController {
 
     @OnOpen
     public void OnOpen(Session session, @PathParam(value = "name") String name){
+        logger.info("name: ={}",name);
         this.session = session;
         this.name = name;
         // name是用来表示唯一客户端，如果需要指定发送，需要指定发送通过name来区分
         webSocketSet.put(name,this);
-        log.info("[WebSocket] 连接成功，当前连接人数为：={}",webSocketSet.size());
+        logger.info("[WebSocket] 连接成功，当前连接人数为：={}",webSocketSet.size());
     }
 
 
     @OnClose
     public void OnClose(){
         webSocketSet.remove(this.name);
-        log.info("[WebSocket] 退出成功，当前连接人数为：={}",webSocketSet.size());
+        logger.info("[WebSocket] 退出成功，当前连接人数为：={}",webSocketSet.size());
     }
 
     @OnMessage
     public void OnMessage(String message){
-        log.info("[WebSocket] 收到消息：{}",message);
+        logger.info("[WebSocket] 服务端收到消息：{}",message);
         //判断是否需要指定发送，具体规则自定义
         if(message.indexOf("TOUSER") == 0){
             String name = message.substring(message.indexOf("TOUSER")+6,message.indexOf(";"));
-            AppointSending(name,message.substring(message.indexOf(";")+1,message.length()));
+            appointSending(name,message.substring(message.indexOf(";")+1,message.length()));
         }else{
-            GroupSending(message);
+            groupSending(message);
         }
-
     }
 
     /**
      * 群发
-     * @param message
+     * @param message 群发的消息
      */
-    public void GroupSending(String message){
+    public void groupSending(String message){
+        logger.info("[WebSocket] 服务端群发消息：{}",message);
+        message ="测试群发消息";
         for (String name : webSocketSet.keySet()){
             try {
                 webSocketSet.get(name).session.getBasicRemote().sendText(message);
@@ -88,10 +87,11 @@ public class WebSocketController {
 
     /**
      * 指定发送
-     * @param name
-     * @param message
+     * @param name 指定发送的用户
+     * @param message 发送的消息
      */
-    public void AppointSending(String name,String message){
+    public void appointSending(String name, String message){
+        logger.info("[WebSocket] 服务端指定消息：{}",message);
         try {
             webSocketSet.get(name).session.getBasicRemote().sendText(message);
         }catch (Exception e){

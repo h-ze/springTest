@@ -1,6 +1,6 @@
 package com.hz.test;
 
-import com.hz.PushCallback;
+import com.hz.utils.PushCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttTopic;

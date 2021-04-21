@@ -8,6 +8,18 @@ server :
 spring:
   profiles.active: dev
 
+  mail:
+    host: smtp.qq.com
+    protocol: smtp
+    default-encoding: UTF-8
+    password: fzvarxpndockbaeg
+    username: 1510161612@qq.com
+    port: 587
+    properties:
+      mail:
+        stmp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+        debug: true
+
   #去哪个目录下找什么模板
   #spring.thymeleaf.prefix=classpath:/templates/
   #spring.thymeleaf.suffix=.html
@@ -40,6 +52,8 @@ logging:
   level:
     root: info
     com.hz.dao: debug
+
+
 
 
 #设置jsp页面 使用以下三个配置时需要放开jstl相关的maven依赖
