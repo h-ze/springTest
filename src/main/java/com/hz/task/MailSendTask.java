@@ -1,6 +1,7 @@
 package com.hz.task;
 
 import com.hz.config.BeanConfig;
+import com.hz.entity.Employee;
 import com.hz.entity.MailConstants;
 import com.hz.entity.User;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,10 @@ public class MailSendTask {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId("1");
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, new User()/*, correlationData*/);
-        User user = new User();
+        //User user = new User();
         //user.setName("test");
-        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,user, new CorrelationData("1"));
+        Employee employee = new Employee();
+        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,employee, new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, "测试work模型:测试RabbitMq"/*MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, emp, new CorrelationData(mailSendLog.getMsgId())*/);
         /*List<MailSendLog> logs = mailSendLogService.getMailSendLogsByStatus();
         if (logs == null || logs.size() == 0) {

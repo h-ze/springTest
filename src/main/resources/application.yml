@@ -54,21 +54,31 @@ logging:
     com.hz.dao: debug
 
 
+spring.mail:
+  host: smtp.qq.com
+  protocol: smtp
+  default-encoding: UTF-8
+  password: kuwvhzyxkknujigi
+  username: 1102211390@qq.com
+  port: 465
+  properties.mail.stmp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+  properties.mail.debug: true
+  properties.mail.mail.host: smtp.qq.com
+  properties.mail.smtp.protocol: smtp
+  properties.mail.smtp.auth: true
+  properties.mail.smtp.port: 465
+
+
 
 eureka.client.healthcheck.enabled: true
-
 # rabbitmq 服务所在ip
 spring.rabbitmq.host: 127.0.0.1
-
 # rabbitmq 端口
 spring.rabbitmq.port: 5672
-
 # rabbitmq 账号
 spring.rabbitmq.username: guest
-
 # rabbitmq 密码
 spring.rabbitmq.password: guest
-
 # 消息总线相关
 management.endpoints.web.exposure.include: bus-refresh
 
