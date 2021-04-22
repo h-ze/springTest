@@ -55,6 +55,22 @@ logging:
 
 
 
+eureka.client.healthcheck.enabled: true
+
+# rabbitmq 服务所在ip
+spring.rabbitmq.host: 127.0.0.1
+
+# rabbitmq 端口
+spring.rabbitmq.port: 5672
+
+# rabbitmq 账号
+spring.rabbitmq.username: guest
+
+# rabbitmq 密码
+spring.rabbitmq.password: guest
+
+# 消息总线相关
+management.endpoints.web.exposure.include: bus-refresh
 
 #设置jsp页面 使用以下三个配置时需要放开jstl相关的maven依赖
 #spring.mvc.view.prefix= /

@@ -1,6 +1,5 @@
 package com.hz.config;
 
-
 import com.hz.entity.MailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,10 @@ public class RabbitConfig {
 
     @Bean
     RabbitTemplate rabbitTemplate() {
+        logger.info("26");
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setConfirmCallback((data, ack, cause) -> {
+            logger.info("test");
             String msgId = data.getId();
             if (ack) {
                 logger.info(msgId + ":消息发送成功");
@@ -34,15 +35,19 @@ public class RabbitConfig {
                 logger.info(msgId + ":消息发送失败");
             }
         });
-        rabbitTemplate.setReturnCallback((msg, repCode, repText, exchange, routingkey) -> {
-            logger.info("消息发送失败");
-        });
+        rabbitTemplate.setReturnCallback((msg, repCode, repText, exchange, routingkey) -> logger.info("消息发送失败"));
         return rabbitTemplate;
     }
 
+    // 配置一个工作模型队列
     @Bean
     Queue mailQueue() {
         return new Queue(MailConstants.MAIL_QUEUE_NAME, true);
+    }
+
+    @Bean
+    Queue testQueue() {
+        return new Queue("test", true);
     }
 
     @Bean

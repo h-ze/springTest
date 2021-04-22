@@ -3,6 +3,7 @@ package com.hz.email;
 import com.hz.entity.Employee;
 import com.hz.entity.MailConstants;
 import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,9 +25,10 @@ import java.io.IOException;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class MailReceiver {
 
-    public static final Logger logger = LoggerFactory.getLogger(MailReceiver.class);
+    //public static final Logger logger = LoggerFactory.getLogger(MailReceiver.class);
 
     @Autowired
     JavaMailSender javaMailSender;
@@ -39,7 +41,10 @@ public class MailReceiver {
 
     @RabbitListener(queues = MailConstants.MAIL_QUEUE_NAME)
     public void handler(Message message, Channel channel) throws IOException {
-        Employee employee = (Employee) message.getPayload();
+        //log.info("msg:",msg);
+        log.info("message:",message);
+        log.info("channel:",channel);
+        /*Employee employee = (Employee) message.getPayload();
         MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
         String msgId = (String) headers.get("spring_returned_message_correlation");
@@ -72,6 +77,6 @@ public class MailReceiver {
             channel.basicNack(tag, false, true);
             e.printStackTrace();
             logger.error("邮件发送失败：" + e.getMessage());
-        }
+        }*/
     }
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Configuration
-public class User {
+public class User implements Serializable{
 
     private Integer id;
     private String name;
