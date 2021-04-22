@@ -38,7 +38,9 @@ public class MailSendTask {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId("1");
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, new User()/*, correlationData*/);
-        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, new User(), new CorrelationData("1"));
+        User user = new User();
+        //user.setName("test");
+        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,user, new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, "测试work模型:测试RabbitMq"/*MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, emp, new CorrelationData(mailSendLog.getMsgId())*/);
         /*List<MailSendLog> logs = mailSendLogService.getMailSendLogsByStatus();
         if (logs == null || logs.size() == 0) {

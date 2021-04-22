@@ -93,14 +93,17 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             token = httpServletRequest.getParameter("token");
         }
 
+        //在此处进行redis的验证
+        logger.info("redis中进行token验证");
+
+
         Claims claims = JWTUtil.parseJWT(token);
 
         Date expiration = claims.getExpiration();
         logger.info(expiration.toString());
         logger.info("执行登录任务");
 
-        //在此处进行redis的验证
-        logger.info("redis中进行token验证");
+
 
         //是否需要刷新token
         long currentTimeMillis = System.currentTimeMillis();

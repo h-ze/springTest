@@ -26,4 +26,16 @@ public class RedisUtil {
         System.out.println(aBoolean);
         return aBoolean;
     }
+
+    public boolean deleteRedisExpire(String userId){
+        RedisTemplate redisTemplate = (RedisTemplate) ApplicationContextUtils.getBean("redisTemplate");
+        Boolean aBoolean =false;
+        /*redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.opsForValue().set(compact,compact);
+        redisTemplate.expire(compact, timeout, TimeUnit.SECONDS);
+        Boolean aBoolean = redisTemplate.hasKey(compact);*/
+        System.out.println(aBoolean);
+        return aBoolean;
+    }
 }

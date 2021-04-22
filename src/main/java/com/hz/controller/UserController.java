@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.hz.config.BeanConfig.isOpenRedis;
+
 @Controller
 @Api(tags = "用户管理接口")
 @RequestMapping("/user")
@@ -153,10 +155,11 @@ public class UserController {
                 String token = jwtUtil.createJWT(user.getId().toString(),
                         user.getName(),user.getUserId(), user.getSalt());
                 logger.info(token);
-
-                //将登录的token存储到redis中
-                //boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
-                //logger.info("结果:",setRedisExpire);
+                if (isOpenRedis()){
+                    //将登录的token存储到redis中
+                    boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
+                    logger.info("结果:",setRedisExpire);
+                }
                 return new ConvertResult(0,"登录成功",token);
             }else {
                 return new ConvertResult(999999,"登录失败,密码错误,请重新输入","");
@@ -214,9 +217,11 @@ public class UserController {
         if (sha.equals(user.getPassword())){
             int i = userService.deleteUser(user.getUserId(), sha);
             if (i >0){
-                //将redis中的信息删除
-                //boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
-                //logger.info("结果:",setRedisExpire);
+                if (isOpenRedis()){
+                    //将redis中的信息删除
+                    boolean setRedisExpire = redisUtil.deleteRedisExpire(userId);
+                    logger.info("结果:",setRedisExpire);
+                }
                 return new ConvertResult(0,"注销成功,如需帐号请重新注册","");
             }else {
                 return new ConvertResult(0,"注销失败,请稍后重试","");

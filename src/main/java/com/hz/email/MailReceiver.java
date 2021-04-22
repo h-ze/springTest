@@ -42,8 +42,9 @@ public class MailReceiver {
     @RabbitListener(queues = MailConstants.MAIL_QUEUE_NAME)
     public void handler(Message message, Channel channel) throws IOException {
         //log.info("msg:",msg);
-        log.info("message:",message);
-        log.info("channel:",channel);
+        System.out.println(message);
+        log.info("message: ={}",message);
+        log.info("channel: ={}",channel);
         /*Employee employee = (Employee) message.getPayload();
         MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);

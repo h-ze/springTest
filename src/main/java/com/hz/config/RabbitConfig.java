@@ -8,6 +8,8 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,14 +18,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
     public final static Logger logger = LoggerFactory.getLogger(RabbitConfig.class);
-    @Autowired
-    CachingConnectionFactory cachingConnectionFactory;
+    //@Autowired
+    ;
     //@Autowired
     //MailSendLogService mailSendLogService;
 
     @Bean
-    RabbitTemplate rabbitTemplate() {
-        logger.info("26");
+    RabbitTemplate rabbitTemplate(CachingConnectionFactory cachingConnectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setConfirmCallback((data, ack, cause) -> {
             logger.info("test");
@@ -59,5 +60,11 @@ public class RabbitConfig {
     Binding mailBinding() {
         return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_ROUTING_KEY_NAME);
     }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory){
+        return new RabbitAdmin(connectionFactory);
+    }
+
 
 }
