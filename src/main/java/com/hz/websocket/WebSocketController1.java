@@ -1,4 +1,4 @@
-package com.hz.controller;
+package com.hz.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -19,10 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Component
-@ServerEndpoint(value = "/websocket/{name}")
-public class WebSocketController {
+@ServerEndpoint(value = "/websocket/{name}/{test}")
+public class WebSocketController1 {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketController1.class);
 
     /**
      *  与某个客户端的连接对话，需要通过它来给客户端发送消息
@@ -37,7 +37,7 @@ public class WebSocketController {
     /**
      *  用于存所有的连接服务的客户端，这个对象存储是安全的
      */
-    private static ConcurrentHashMap<String, WebSocketController> webSocketSet = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, WebSocketController1> webSocketSet = new ConcurrentHashMap<>();
 
 
     @OnOpen

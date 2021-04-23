@@ -4,6 +4,11 @@ import com.hz.entity.ConvertResult;
 import com.hz.entity.ResponseMessageWithoutException;
 import com.hz.entity.User;
 import com.hz.test.MyClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.websocket.ContainerProvider;
 import javax.websocket.WebSocketContainer;
 import java.net.URI;
+import java.util.Date;
 
 import static com.hz.entity.ResponseMessageWithoutException.errorResult;
 import static com.hz.entity.ResponseMessageWithoutException.successResult;
@@ -21,7 +27,10 @@ import static com.hz.entity.ResponseMessageWithoutException.successResult;
  */
 @RestController
 @RequestMapping("index")
+@Slf4j
 public class indexController {
+    /*@Autowired
+    SimpMessagingTemplate simpMessagingTemplate;*/
 
     @PostMapping("/sendMessage")
     public ResponseMessageWithoutException<String> sendMessage(@RequestParam String message, @RequestParam String token){
@@ -36,4 +45,5 @@ public class indexController {
             return errorResult(0,"测试websocket失败");
         }
     }
+
 }

@@ -27,6 +27,10 @@ public class RabbitConfig {
     RabbitTemplate rabbitTemplate(CachingConnectionFactory cachingConnectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setConfirmCallback((data, ack, cause) -> {
+            logger.info("data: ={}",data);
+            logger.info("ack: ={}",ack);
+            logger.info("cause: ={}",cause);
+
             logger.info("test");
             String msgId = data.getId();
             if (ack) {
@@ -43,12 +47,15 @@ public class RabbitConfig {
     // 配置一个工作模型队列
     @Bean
     Queue mailQueue() {
+        // 支持持久化
         return new Queue(MailConstants.MAIL_QUEUE_NAME, true);
     }
 
     @Bean
     Queue testQueue() {
+        // 支持持久化
         return new Queue("test", true);
+
     }
 
     @Bean
@@ -56,6 +63,7 @@ public class RabbitConfig {
         return new DirectExchange(MailConstants.MAIL_EXCHANGE_NAME, true, false);
     }
 
+    //绑定测试交换机和测试队列
     @Bean
     Binding mailBinding() {
         return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_ROUTING_KEY_NAME);

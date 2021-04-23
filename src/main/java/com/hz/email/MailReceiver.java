@@ -19,6 +19,7 @@ import org.thymeleaf.context.Context;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeBodyPart;
@@ -48,7 +49,7 @@ public class MailReceiver {
         log.info("message: ={}",message);
         log.info("channel: ={}",channel);
         Employee employee = (Employee) message.getPayload();
-        MessageHeaders headers = message.getHeaders();
+        /*MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
         String msgId = (String) headers.get("spring_returned_message_correlation");
         if (redisTemplate.opsForHash().entries("mail_log").containsKey(msgId)) {
@@ -56,7 +57,11 @@ public class MailReceiver {
             log.info(msgId + ":消息已经被消费");
             channel.basicAck(tag, false);//确认消息已消费
             return;
-        }
+        }*/
+        //sendEmail(employee);
+    }
+
+    private void sendEmail(Employee employee) throws MessagingException, UnsupportedEncodingException {
         //构造SMTP邮件服务器的基本环境
         Properties properties = new Properties();
         properties.setProperty("mail.host", "smtp.qq.com");
