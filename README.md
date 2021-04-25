@@ -5,3 +5,5 @@
 问题:如果一直在使用时token应该不能过期,如果超过几个小时未使用token应该会有个默认过期时间
 默认返回一个token以及一个refreshToken 
 问题:如果并发下几个接口同时调用又遇到需要刷新token时
+
+jenkins

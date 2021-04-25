@@ -23,3 +23,6 @@ POST方式，会将表单中的数据经过urlencode编码后放在request body 
     
 什么是restful风格
 http协议具体内容
+
+
+@ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成一个websocket服务器端。注解的值将被用于监听用户连接的终端访问URL地址
