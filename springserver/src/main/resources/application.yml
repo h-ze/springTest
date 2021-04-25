@@ -1,10 +1,10 @@
-#ä½¿ç”¨çš„ç«¯å£å·
+#Ê¹ÓÃµÄ¶Ë¿ÚºÅ
 server :
   port : 8080
-#é¡¹ç›®çš„åç§°
-  server.servlet.context-path : /springboot
+  #ÏîÄ¿µÄÃû³Æ
+  servlet.context-path : /springboot
 
-#ä½¿ç”¨çš„é…ç½®æ–‡ä»¶
+#Ê¹ÓÃµÄÅäÖÃÎÄ¼ş
 spring:
   profiles.active: dev
 
@@ -30,12 +30,12 @@ spring:
     template:
       mandatory: true
 
-  #å»å“ªä¸ªç›®å½•ä¸‹æ‰¾ä»€ä¹ˆæ¨¡æ¿
+  #È¥ÄÄ¸öÄ¿Â¼ÏÂÕÒÊ²Ã´Ä£°å
   #spring.thymeleaf.prefix=classpath:/templates/
   #spring.thymeleaf.suffix=.html
   #spring.thymeleaf.encoding=UTF-8
   #spring.thymeleaf.servlet.content-type=text/html
-  #è®©æ¨¡æ¿æ—¢æ˜¯æ¨¡æ¿åˆæ˜¯é™æ€èµ„æº
+  #ÈÃÄ£°å¼ÈÊÇÄ£°åÓÖÊÇ¾²Ì¬×ÊÔ´
 
   resources.static-locations: classpath:/templates/,classpath:/static/
   datasource:
@@ -54,6 +54,8 @@ spring:
     host: localhost
     database: 0
 
+
+
 mybatis :
   mapper-locations: classpath:/com/hz/mapper/*.xml
   type-aliases-package: com.hz.demo.entity
@@ -64,22 +66,22 @@ logging:
     com.hz.dao: debug
 
 #eureka.client.healthcheck.enabled: true
-# rabbitmq æœåŠ¡æ‰€åœ¨ip
+# rabbitmq ·şÎñËùÔÚip
 #spring.rabbitmq.host: 127.0.0.1
-# rabbitmq ç«¯å£
+# rabbitmq ¶Ë¿Ú
 #spring.rabbitmq.port: 5672
-# rabbitmq è´¦å·
+# rabbitmq ÕËºÅ
 #spring.rabbitmq.username: guest
-# rabbitmq å¯†ç 
+# rabbitmq ÃÜÂë
 #spring.rabbitmq.password: guest
-# æ¶ˆæ¯æ€»çº¿ç›¸å…³
+# ÏûÏ¢×ÜÏßÏà¹Ø
 #management.endpoints.web.exposure.include: bus-refresh
 
 
 
 
-#è®¾ç½®jspé¡µé¢ ä½¿ç”¨ä»¥ä¸‹ä¸‰ä¸ªé…ç½®æ—¶éœ€è¦æ”¾å¼€jstlç›¸å…³çš„mavenä¾èµ–
+#ÉèÖÃjspÒ³Ãæ Ê¹ÓÃÒÔÏÂÈı¸öÅäÖÃÊ±ĞèÒª·Å¿ªjstlÏà¹ØµÄmavenÒÀÀµ
 #spring.mvc.view.prefix= /
 #spring.mvc.view.suffix=.jsp
-#å¼€å¯jspé¡µé¢çš„çƒ­éƒ¨ç½²
+#¿ªÆôjspÒ³ÃæµÄÈÈ²¿Êğ
 #server.servlet.jsp.init-parameters.development =true
