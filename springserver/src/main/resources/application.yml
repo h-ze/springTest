@@ -28,7 +28,6 @@ spring:
       mandatory: true
 
 
-
   resources.static-locations: classpath:/templates/,classpath:/static/
   datasource:
     url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
@@ -58,3 +57,4 @@ logging:
     com.hz.dao: debug
 
     eureka.client.healthcheck.enabled: false
+
