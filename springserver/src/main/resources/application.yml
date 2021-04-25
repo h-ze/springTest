@@ -1,10 +1,7 @@
-#使用的端口号
 server :
   port : 8080
-  #项目的名称
   servlet.context-path : /springboot
 
-#使用的配置文件
 spring:
   profiles.active: dev
 
@@ -30,12 +27,6 @@ spring:
     template:
       mandatory: true
 
-  #去哪个目录下找什么模板
-  #spring.thymeleaf.prefix=classpath:/templates/
-  #spring.thymeleaf.suffix=.html
-  #spring.thymeleaf.encoding=UTF-8
-  #spring.thymeleaf.servlet.content-type=text/html
-  #让模板既是模板又是静态资源
 
   resources.static-locations: classpath:/templates/,classpath:/static/
   datasource:
@@ -65,23 +56,4 @@ logging:
     root: info
     com.hz.dao: debug
 
-#eureka.client.healthcheck.enabled: true
-# rabbitmq 服务所在ip
-#spring.rabbitmq.host: 127.0.0.1
-# rabbitmq 端口
-#spring.rabbitmq.port: 5672
-# rabbitmq 账号
-#spring.rabbitmq.username: guest
-# rabbitmq 密码
-#spring.rabbitmq.password: guest
-# 消息总线相关
-#management.endpoints.web.exposure.include: bus-refresh
 
-
-
-
-#设置jsp页面 使用以下三个配置时需要放开jstl相关的maven依赖
-#spring.mvc.view.prefix= /
-#spring.mvc.view.suffix=.jsp
-#开启jsp页面的热部署
-#server.servlet.jsp.init-parameters.development =true
