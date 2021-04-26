@@ -1,9 +1,9 @@
-package com.hz;
+package com.hz.book;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringEmailApplicationTests {
+class BookApplicationTests {
 
     //@Test
     void contextLoads() {

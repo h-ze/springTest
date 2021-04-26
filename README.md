@@ -6,4 +6,7 @@
 默认返回一个token以及一个refreshToken 
 问题:如果并发下几个接口同时调用又遇到需要刷新token时
 
+
+springboot与springcloud的版本一定要对应 不然会出现启动失败的问题
+
 jenkins

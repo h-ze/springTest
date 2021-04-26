@@ -12,15 +12,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.hz.dao")
 @EnableCaching
 @EnableScheduling
-public class Application extends SpringBootServletInitializer {
+public class ServerApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class,args);
+        SpringApplication.run(ServerApplication.class,args);
 
     }
     //war包打开 需要继承SpringBootServletInitializer
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(Application.class);
+        return builder.sources(ServerApplication.class);
     }
 
 

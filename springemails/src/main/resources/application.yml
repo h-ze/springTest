@@ -2,17 +2,18 @@
 server :
   port : 8084
   #?????????
-  server.servlet.context-path : /springbootemail
+  servlet.context-path : /springbootemail
 
 #???????????
 spring:
-
+  application:
+    name: springbootEmail
   mail:
     host: smtp.qq.com
     protocol: smtp
     default-encoding: UTF-8
-    password: fzvarxpndockbaeg
-    username: 1102211390@qq.com
+    #    password: fzvarxpndockbaeg
+    #    username: 1102211390@qq.com
     port: 587
     properties:
       mail:
@@ -67,7 +68,7 @@ spring.rabbitmq.username: guest
 # rabbitmq ????
 spring.rabbitmq.password: guest
 # ??????????
-management.endpoints.web.exposure.include: bus-refresh
+#management.endpoints.web.exposure.include: bus-refresh
 
 ## springboot????rabbitmq?????????
 
@@ -78,3 +79,16 @@ management.endpoints.web.exposure.include: bus-refresh
 #spring.mvc.view.suffix=.jsp
 #????jsp?????????
 #server.servlet.jsp.init-parameters.development =true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6890/eureka/
+
+info:
+  app.name: eureka
+  company:
+    name: hz
+  build:
+    artifactId: @project.artifactId@
+    version: @project.version@
