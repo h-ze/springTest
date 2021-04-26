@@ -3,21 +3,15 @@ package com.hz.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.context.Context;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.util.Date;
 import java.util.Properties;
 
 @RestController
@@ -30,7 +24,7 @@ public class EmailController {
     MailProperties mailProperties;
 
     @PostMapping("/sendEmail")
-    public void handler() throws IOException, MessagingException {
+    public void handler() throws MessagingException {
 
         //收到消息，发送邮件
         /*MimeMessage msg = javaMailSender.createMimeMessage();

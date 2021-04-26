@@ -56,4 +56,5 @@ logging:
     root: info
     com.hz.dao: debug
 
+    eureka.client.healthcheck.enabled: false
 
