@@ -19,8 +19,13 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <swagger.version>2.7.0</swagger.version>
     <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-
   </properties>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.0.RELEASE</version>
+  </parent>
 
   <dependencyManagement>
     <dependencies>
@@ -33,26 +38,8 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <!--<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.4.0</version>
-    <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
-  </parent>-->
-
-  <!--<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.4.3</version>
-  </parent>-->
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.0.RELEASE</version>
-  </parent>
 
   <dependencies>
-
     <!-- web-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -149,23 +136,13 @@
       <version>${swagger.version}</version>
     </dependency>
 
-    <!-- springcloud-->
-    <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-dependencies</artifactId>
-      <version>Greenwich.SR3</version>
-      <type>pom</type>
-      <scope>compile</scope>
-    </dependency>
-
-
   </dependencies>
 
   <modules>
     <module>springemails</module>
     <module>springserver</module>
     <module>springentity</module>
+    <module>springbook</module>
     <module>eureka</module>
   </modules>
 

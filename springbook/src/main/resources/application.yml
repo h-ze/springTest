@@ -1,0 +1,50 @@
+server :
+  port : 8085
+  servlet.context-path : /springbootbook
+
+spring:
+  application:
+    name: springbootBook
+  resources:
+    static-locations: classpath:/templates/,classpath:/static/
+  datasource:
+    url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+
+  data:
+    mongodb:
+      database: admin
+      host: 127.0.0.1
+      password:
+      port: 27017
+      username:
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6890/eureka/
+    healthcheck:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+          include=*,hystrix:
+            stream:
+
+info:
+  app.name: eureka
+  company:
+    name: hz
+  build:
+    artifactId: @project.artifactId@
+    version: @project.version@
+
+feign:
+  hystrix:
+    enabled: true
