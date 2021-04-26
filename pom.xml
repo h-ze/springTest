@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
@@ -21,12 +21,6 @@
     <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
   </properties>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.0.RELEASE</version>
-  </parent>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -44,7 +38,13 @@
     <version>2.4.0</version>
     <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
   </parent>-->
-  
+
+  <!--<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+
+    <version>2.4.3</version>
+  </parent>-->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -53,6 +53,7 @@
   </parent>
 
   <dependencies>
+
     <!-- web-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -151,15 +152,15 @@
 
     <!-- springcloud-->
     <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
-<!--
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-dependencies</artifactId>
-      <version>Greenwich.SR3</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
--->
+    <!--
+        <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-dependencies</artifactId>
+          <version>Greenwich.SR3</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+    -->
 
 
   </dependencies>
