@@ -11,7 +11,7 @@
     <groupId>com.hz</groupId>
     <artifactId>book</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>book</name>
+    <name>springbook</name>
     <description>Demo project for Spring Boot</description>
 
     <dependencies>

@@ -1,22 +1,16 @@
 package com.example.demo;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Calendar;
 
 @SpringBootTest
 class ApplicationTests {
 
-    @Test
+    //@Test
     void contextLoads() {
 //        Calendar instance = Calendar.getInstance();
 //        instance.add(Calendar.SECOND,90);
@@ -34,7 +28,7 @@ class ApplicationTests {
 
     }
 
-    @Test
+    //@Test
     public void test(){
         /*JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256("123")).build();
         DecodedJWT decodedJWT = jwtVerifier.verify("");
