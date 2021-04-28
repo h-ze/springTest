@@ -151,6 +151,20 @@
       <version>${swagger.version}</version>
     </dependency>
 
+    <!-- Spring Boot Dubbo 依赖 -->
+    <dependency>
+      <groupId>io.dubbo.springboot</groupId>
+      <artifactId>spring-boot-starter-dubbo</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.5.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- springcloud-->
     <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
     <!--
@@ -170,8 +184,26 @@
     <module>springentity</module>
     <module>springbook</module>
     <module>eureka</module>
+    <module>springdubboprovider</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <profileActive>dev</profileActive>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <profileActive>prod</profileActive>
+      </properties>
+    </profile>
+  </profiles>
 
   <build>
     <finalName>springbootDemo</finalName>

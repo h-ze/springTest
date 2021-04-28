@@ -3,7 +3,7 @@ server :
   servlet.context-path : /springboot
 
 spring:
-  profiles.active: dev
+  profiles.active: @profileActive@
 
   mail:
     host: smtp.qq.com
