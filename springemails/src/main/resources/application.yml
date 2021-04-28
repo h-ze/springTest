@@ -20,14 +20,6 @@ spring:
         stmp.socketFactory.class: javax.net.ssl.SSLSocketFactory
         debug: true
 
-  listener:
-    simple:
-      concurrency: 5
-      ## manual:??? ack??????
-      acknowledge-mode: manual
-      max-concurrency: 10
-      prefetch: 1
-
   #???????????????
   #spring.thymeleaf.prefix=classpath:/templates/
   #spring.thymeleaf.suffix=.html
@@ -52,22 +44,25 @@ spring:
     host: localhost
     database: 0
 
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        concurrency: 5
+        ## manual:??? ack??????
+        acknowledge-mode: manual
+        max-concurrency: 10
+        prefetch: 1
+
 
 logging:
   level:
     root: info
     com.hz.dao: debug
 
-eureka.client.healthcheck.enabled: true
-# rabbitmq ????????ip
-spring.rabbitmq.host: 127.0.0.1
-# rabbitmq ???
-spring.rabbitmq.port: 5672
-# rabbitmq ???
-spring.rabbitmq.username: guest
-# rabbitmq ????
-spring.rabbitmq.password: guest
-# ??????????
 #management.endpoints.web.exposure.include: bus-refresh
 
 ## springboot????rabbitmq?????????
@@ -84,6 +79,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://127.0.0.1:6890/eureka/
+    healthcheck:
+      enabled: true
 
 info:
   app.name: eureka
