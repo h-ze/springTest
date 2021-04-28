@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Component
 public interface Client {
     @GetMapping("/test")
-    public String getTest();
+    String getTest();
 }

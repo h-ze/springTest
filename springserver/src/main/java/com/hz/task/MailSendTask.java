@@ -4,6 +4,7 @@ import com.hz.config.BeanConfig;
 
 import com.hz.demo.entity.Employee;
 import com.hz.demo.entity.MailConstants;
+import com.hz.demo.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -38,9 +39,9 @@ public class MailSendTask {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId("1");
 
-        //Employee employee = new Employee();
+        Employee employee = new Employee();
 
-        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,"employee", new CorrelationData("1"));
+        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,new User(), new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_ROUTING_KEY_NAME,employee, new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, "测试work模型:测试RabbitMq"/*MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, emp, new CorrelationData(mailSendLog.getMsgId())*/);
         /*List<MailSendLog> logs = mailSendLogService.getMailSendLogsByStatus();

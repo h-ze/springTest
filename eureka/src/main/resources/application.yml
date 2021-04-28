@@ -13,9 +13,9 @@ management:
         enabled: false
 spring:
   resources.static-locations: classpath:/templates/,classpath:/static/
-  datasource:
-      url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      username: root
-      password: root
-      type: com.alibaba.druid.pool.DruidDataSource
+#  datasource:
+#      url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      username: root
+#      password: root
+#      type: com.alibaba.druid.pool.DruidDataSource

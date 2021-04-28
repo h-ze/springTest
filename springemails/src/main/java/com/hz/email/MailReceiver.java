@@ -48,7 +48,7 @@ public class MailReceiver {
     public void handler(Message message, Channel channel) throws IOException, MessagingException {
         log.info("message: ={}",message);
         log.info("channel: ={}",channel);
-        Employee employee = (Employee) message.getPayload();
+        //Employee employee = (Employee) message.getPayload();
         /*MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
         String msgId = (String) headers.get("spring_returned_message_correlation");

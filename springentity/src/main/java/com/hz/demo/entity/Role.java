@@ -3,6 +3,8 @@ package com.hz.demo.entity;
 import java.io.Serializable;
 
 public class Role implements Serializable {
+    private static final long serialVersionUID = 123L;
+
     private String id;
     private String name;
 
