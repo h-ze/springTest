@@ -1,5 +1,5 @@
 package com.hz.springdubbointerface.service;
 
-public interface UserInterface {
+public interface UserInterfaces {
     void getUser();
 }

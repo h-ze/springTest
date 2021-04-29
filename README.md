@@ -25,4 +25,9 @@ system ：在编译、测试时有效，但是在运行时无效。和provided�
 @configuration和@component之间的区别
 @configuration和@component之间的区别是：@Component注解的范围最广，所有类都可以注解，但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
 
-一句话概括就是 @Configuration 中所有带 @Bean 注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例。
+一句话概括就是 @Configuration 中所有带 @Bean 注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例。使用Component时是不同的对象
+
+
+
+Exclusions：是依赖排除（Dependency Exclusions） 
+maven的依赖调解有两大原则：路径最近者优先；第一声明者优先
