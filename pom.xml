@@ -185,6 +185,8 @@
     <module>springbook</module>
     <module>eureka</module>
     <module>springdubboprovider</module>
+    <module>springdubboconsumer</module>
+    <module>springdubbointerface</module>
   </modules>
 
   <profiles>
