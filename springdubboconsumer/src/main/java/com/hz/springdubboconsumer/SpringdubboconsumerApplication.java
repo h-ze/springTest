@@ -1,6 +1,6 @@
 package com.hz.springdubboconsumer;
 
-import com.hz.springdubbointerface.service.UserInterfaces;
+import com.hz.springdubbointerface.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ public class SpringdubboconsumerApplication {
 
         private final Logger logger = LoggerFactory.getLogger(getClass());
 
-        @Reference(url = "dubbo://localhost:20882",version = "${dubbo.consumer.UserInterface.version}")
-        private UserInterfaces userRpcService;
+        @Reference(/*url = "dubbo://localhost:20882",*/version = "${dubbo.consumer.UserInterface.version}")
+        private UserService userRpcService;
 
         @Override
         public void run(String... args) throws Exception {
