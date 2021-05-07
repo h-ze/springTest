@@ -1,5 +1,6 @@
 package com.hz.email;
 
+import com.hz.demo.entity.Email;
 import com.hz.demo.entity.Employee;
 import com.hz.demo.entity.MailConstants;
 import com.rabbitmq.client.Channel;
@@ -48,6 +49,8 @@ public class MailReceiver {
     public void handler(Message message, Channel channel) throws IOException, MessagingException {
         log.info("message: ={}",message);
         log.info("channel: ={}",channel);
+        List<Email> payload = (List<Email>) message.getPayload();
+        log.info("payload: ={}",payload);
         //Employee employee = (Employee) message.getPayload();
         /*MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
@@ -58,7 +61,7 @@ public class MailReceiver {
             channel.basicAck(tag, false);//确认消息已消费
             return;
         }*/
-        //sendEmail(employee);
+        //sendEmail(null);
     }
 
     private void sendEmail(Employee employee) throws MessagingException, UnsupportedEncodingException {

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringdubbointerfaceApplication {
+public class SpringDubboInterfaceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringdubbointerfaceApplication.class, args);
+        SpringApplication.run(SpringDubboInterfaceApplication.class, args);
     }
 
 }

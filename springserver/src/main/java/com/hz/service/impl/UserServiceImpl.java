@@ -1,9 +1,12 @@
 package com.hz.service.impl;
 
+import com.hz.dao.EmailDao;
 import com.hz.dao.UserDAO;
+import com.hz.demo.entity.Email;
 import com.hz.demo.entity.User;
 import com.hz.demo.entity.UserRoles;
 import com.hz.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +15,15 @@ import java.util.List;
 
 @Service("userService")
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private EmailDao emailDao;
+
     @Override
     public int save(User user, UserRoles userRoles) {
         //user.setId(UUID.randomUUID().toString().replace("-",""));
@@ -23,6 +31,12 @@ public class UserServiceImpl implements UserService {
         if (userRoles!=null){
             userRoles.setId(0);
             userDAO.addUserRoles(userRoles);
+            Email email = new Email();
+            email.setEmailId(0);
+            email.setEmail(user.getName());
+            email.setStatus(2);
+            int i = emailDao.addEmailMessage(email);
+            log.info("i: {}",i);
         }
 
         return userDAO.save(user);

@@ -15,19 +15,19 @@ import java.util.Map;
  * swagger测试地址
  */
 @RestController
-@Api(tags = "测试接口功能")
+//@Api(tags = "测试接口功能")
 @RequestMapping("/swagger")
 public class SwaggerController {
 
     @Autowired
     private UserService userService;
     @PostMapping("/addUser")
-    @ApiOperation(value ="添加用户的接口",notes="用来添加一个新的用户")
+    /*@ApiOperation(value ="添加用户的接口",notes="用来添加一个新的用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", paramType = "form", dataType = "String",value = "用户名", defaultValue = "李四"),
             @ApiImplicitParam(name = "address", value = "用户地址", defaultValue = "深圳", required = true),
     }
-    )
+    )*/
     public String addUser( String username, @RequestParam(required = true) String address) {
         System.out.println(username);
         User user = new User();
@@ -39,9 +39,9 @@ public class SwaggerController {
     }
 
     @GetMapping("/findUserById")
-    @ApiOperation("根据id查询用户的接口")
+    //@ApiOperation("根据id查询用户的接口")
     @RequiresRoles("admin1")
-    @ApiImplicitParam(name = "id", value = "用户id", defaultValue = "99", required = true)
+    //@ApiImplicitParam(name = "id", value = "用户id", defaultValue = "99", required = true)
     public Map<String,Object> getUserById(Integer id) {
         System.out.println(id);
         Map<String, Object> map = new HashMap<>();
@@ -51,9 +51,9 @@ public class SwaggerController {
     }
 
     @PostMapping("/save")
-    @ApiOperation("保存用户信息")
+    /*@ApiOperation("保存用户信息")
     @ApiResponses({@ApiResponse(code = 401,message = "未被授权"),
-                    @ApiResponse(code =404,message = "路径错误")})
+                    @ApiResponse(code =404,message = "路径错误")})*/
 
     //requestBody可以不加ApiImplicitParams
     public Map<String,Object> saveUser(@RequestBody User user) {

@@ -2,9 +2,11 @@ package com.hz.task;
 
 import com.hz.config.BeanConfig;
 
+import com.hz.demo.entity.Email;
 import com.hz.demo.entity.Employee;
 import com.hz.demo.entity.MailConstants;
 import com.hz.demo.entity.User;
+import com.hz.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -29,6 +32,9 @@ public class MailSendTask {
     private BeanConfig beanConfig;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     RabbitTemplate rabbitTemplate;
 
     @Scheduled(cron = "0/10 * * * * ?")
@@ -41,7 +47,12 @@ public class MailSendTask {
 
         Employee employee = new Employee();
 
-        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,new User(), new CorrelationData("1"));
+        List<Email> unactivatedEmails = emailService.getUnactivatedEmails();
+        log.info("消息列表: {}",unactivatedEmails);
+
+        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME,unactivatedEmails, new CorrelationData("1"));
+
+        //rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,new User(), new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_ROUTING_KEY_NAME,employee, new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_QUEUE_NAME, "测试work模型:测试RabbitMq"/*MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, emp, new CorrelationData(mailSendLog.getMsgId())*/);
         /*List<MailSendLog> logs = mailSendLogService.getMailSendLogsByStatus();

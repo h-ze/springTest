@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 @EnableDubbo
-public class SpringdubboproviderApplication {
+public class SpringDubboProviderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringdubboproviderApplication.class, args);
+        SpringApplication.run(SpringDubboProviderApplication.class, args);
     }
 
 }

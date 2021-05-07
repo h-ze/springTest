@@ -11,7 +11,7 @@ public class indexController {
 
     @RequestMapping("/test")
     public String getTest(){
-        return "测试成功";
+        return "调用springbook测试成功";
     }
 
 }

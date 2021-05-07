@@ -121,9 +121,9 @@ public class UserController {
             userRoles.setRoleId(type);
             int i = userService.save(addUser,userRoles);
             if (i >0){
-                return new ConvertResult(0,"注册成功","用户已注册成功");
+                return new ConvertResult(100000,"注册成功","用户已注册成功,请前往当前注册邮箱地址点击激活用户");
             }else {
-                return new ConvertResult(0,"注册失败","用户注册失败");
+                return new ConvertResult(999999,"注册失败","用户注册失败");
             }
         }
     }

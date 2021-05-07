@@ -66,7 +66,7 @@ public class RabbitConfig {
     //绑定测试交换机和测试队列
     @Bean
     Binding mailBinding() {
-        return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_ROUTING_KEY_NAME);
+        return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_QUEUE_NAME);
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.hz.controller;
 
 
 import com.hz.demo.entity.ConvertResult;
+import com.hz.demo.entity.ResponseResult;
 import com.hz.demo.entity.User;
 import com.hz.service.UserService;
 import com.hz.utils.SaltUtil;
@@ -129,8 +130,8 @@ public class AdminUserController {
     }
     )
     @RequiresRoles("admin")
-    public ConvertResult getAccount(Integer type,String keyword,Integer page,Integer per_page){
-        return new ConvertResult(0,"删除成功","用户已删除");
+    public ResponseResult<User> getAccount(Integer type, String keyword, Integer page, Integer per_page){
+        return new ResponseResult<User>(0,"获取用户列表成功",new User());
     }
 
 
