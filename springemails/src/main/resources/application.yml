@@ -49,13 +49,13 @@ spring:
 #    port: 5672
 #    username: guest
 #    password: guest
-    listener:
-      simple:
-        concurrency: 5
-        ## manual:??? ack??????
-        acknowledge-mode: manual
-        max-concurrency: 10
-        prefetch: 1
+  listener:
+    simple:
+      concurrency: 5
+      ## manual:??? ack??????
+      acknowledge-mode: manual
+      max-concurrency: 10
+      prefetch: 1
 
 
 logging:

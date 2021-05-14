@@ -42,15 +42,13 @@ public class MailSendTask {
         SimpleDateFormat sd  = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String date = sd.format(new Date());
         log.info("定时器任务: "+date);
-        CorrelationData correlationData = new CorrelationData();
-        correlationData.setId("1");
 
-        Employee employee = new Employee();
+        //Employee employee = new Employee();
 
-        List<Email> unactivatedEmails = emailService.getUnactivatedEmails();
+        List<Email> unactivatedEmails = emailService.getUnactivatedEmails(2);
+        unactivatedEmails.forEach(email -> rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME,email, new CorrelationData(String.valueOf(email.getEmailId()))));
         log.info("消息列表: {}",unactivatedEmails);
 
-        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME,unactivatedEmails, new CorrelationData("1"));
 
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,new User(), new CorrelationData("1"));
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_ROUTING_KEY_NAME,employee, new CorrelationData("1"));

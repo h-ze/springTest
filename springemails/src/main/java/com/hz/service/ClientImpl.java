@@ -1,4 +1,4 @@
-package com.hz.controller;
+package com.hz.service;
 
 
 import org.springframework.stereotype.Component;

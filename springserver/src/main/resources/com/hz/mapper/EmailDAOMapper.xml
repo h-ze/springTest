@@ -10,8 +10,12 @@
         insert into t_user_role values (#{id},#{userId},#{roleId})
     </insert>
 
-    <select id="getEmailList" parameterType="Integer" resultType="String">
-        select email from email where status =#{status}
+    <select id="getEmailList" parameterType="Integer" resultType="com.hz.demo.entity.Email">
+        select email,emailId from email where status =#{status}
+    </select>
+
+    <select id="getEmail" parameterType="String" resultType="com.hz.demo.entity.Email">
+        select email,emailId,status from email where email =#{email}
     </select>
 
     <select id="getUser" parameterType="com.hz.demo.entity.User" resultType="com.hz.demo.entity.User">
@@ -46,7 +50,7 @@
         delete from user where name =#{username}
     </delete>
 
-    <update id="updateUser" parameterType="com.hz.demo.entity.User">
-        update user set password =#{password} where userId =#{userId}
+    <update id="updateEmailStatus">
+        update email set status =#{status} where emailId =#{emailId}
     </update>
 </mapper>

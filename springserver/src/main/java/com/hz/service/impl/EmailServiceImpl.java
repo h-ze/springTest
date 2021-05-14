@@ -17,9 +17,20 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private EmailDao emailDao;
+
     @Override
-    public List<Email> getUnactivatedEmails() {
-        List<Email> emailList = emailDao.getEmailList(2);
-        return emailList;
+    public List<Email> getUnactivatedEmails(int status) {
+        return emailDao.getEmailList(status);
+    }
+
+    @Override
+    public int updateEmailStatus(Integer emailId,int status) {
+        return emailDao.updateEmailStatus(emailId, status);
+    }
+
+    @Override
+    public Email getEmail(String email) {
+        Email emailById = emailDao.getEmail(email);
+        return emailById;
     }
 }
