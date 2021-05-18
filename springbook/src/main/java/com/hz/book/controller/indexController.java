@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//@FeignClient注解服务调用者
 @RestController
 @RequestMapping("test1")
 public class indexController {

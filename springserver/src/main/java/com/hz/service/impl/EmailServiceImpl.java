@@ -30,7 +30,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public Email getEmail(String email) {
-        Email emailById = emailDao.getEmail(email);
-        return emailById;
+        return emailDao.getEmail(email);
     }
 }

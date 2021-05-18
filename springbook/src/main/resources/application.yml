@@ -1,20 +1,22 @@
 server :
   port : 8085
-  servlet.context-path : /springbootbook
+  #servlet.context-path : /springbootbook
 
 spring:
   application:
-    name: springbootBook
+    name: springbootbook
   resources:
     static-locations: classpath:/templates/,classpath:/static/
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    username: root
-#    password: root
-#    type: com.alibaba.druid.pool.DruidDataSource
+  datasource:
+    url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
 
-
+mybatis :
+  mapper-locations: classpath:/com/hz/mapper/*.xml
+  type-aliases-package: com.hz.demo.entity
 
 #  data:
 #    mongodb:
@@ -25,11 +27,18 @@ spring:
 #      username:
 
 eureka:
+#  instance:
+#    hostname: localhost
   client:
     serviceUrl:
       defaultZone: http://127.0.0.1:6890/eureka/
     healthcheck:
       enabled: true
+  instance:
+    instance-id: springbootbook-8085
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
 management:
   endpoints:
     web:

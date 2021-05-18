@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hz.book.dao.BookDao">
+
+    <insert id="addBook" parameterType="com.hz.demo.entity.Book">
+        insert into book values (#{bookId},#{bookName},#{createDate})
+    </insert>
+
+    <update id="updateBook" parameterType="com.hz.demo.entity.Book">
+        update book set bookName = #{bookName} where bookId =#{bookId}
+    </update>
+
+    <select id="getBook" parameterType="String" resultType="com.hz.demo.entity.Book">
+        select bookId,bookName,createDate from book where bookId =#{bookId}
+    </select>
+
+    <delete id="deleteBook" parameterType="String">
+        delete from book where bookId = #{bookId}
+    </delete>
+
+</mapper>

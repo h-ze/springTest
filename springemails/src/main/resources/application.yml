@@ -81,6 +81,11 @@ eureka:
       defaultZone: http://127.0.0.1:6890/eureka/
     healthcheck:
       enabled: true
+  instance:
+    instance-id: springbootemail-8084
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
 
 info:
   app.name: eureka
