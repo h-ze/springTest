@@ -3,27 +3,27 @@
 <mapper namespace="com.hz.dao.EmailDao">
 
     <insert id="addEmailMessage" parameterType="com.hz.demo.entity.Email">
-        insert into email values (#{emailId},#{email},#{status})
+        INSERT INTO email VALUES (#{emailId},#{email},#{status})
     </insert>
 
     <insert id="addUserRoles" parameterType="com.hz.demo.entity.UserRoles">
-        insert into t_user_role values (#{id},#{userId},#{roleId})
+        INSERT INTO t_user_role VALUES (#{id},#{userId},#{roleId})
     </insert>
 
     <select id="getEmailList" parameterType="Integer" resultType="com.hz.demo.entity.Email">
-        select email,emailId from email where status =#{status}
+        SELECT email,emailId FROM email WHERE status =#{status}
     </select>
 
     <select id="getEmail" parameterType="String" resultType="com.hz.demo.entity.Email">
-        select email,emailId,status from email where email =#{email}
+        SELECT email,emailId,status FROM email WHERE email =#{email}
     </select>
 
     <select id="getUser" parameterType="com.hz.demo.entity.User" resultType="com.hz.demo.entity.User">
-        select id,name,age,bir,password,salt,userId from user where name = #{username}
+        SELECT id,name,age,bir,password,salt,userId FROM user WHERE name = #{username}
     </select>
 
     <select id="getUserById" parameterType="String" resultType="com.hz.demo.entity.User">
-        select id,name,age,bir,password,salt,userId from user where userId = #{userId}
+        SELECT id,name,age,bir,password,salt,userId FROM user WHERE userId = #{userId}
     </select>
 
     <resultMap id="userMap" type="com.hz.demo.entity.User">
@@ -36,21 +36,21 @@
         </collection>
     </resultMap>
     <select id="findRolesByUsername" parameterType="String" resultMap="userMap">
-        select u.id uid,u.name,r.id,r.name rname from user u left join t_user_role ur on u.userId =ur.userid
-        left join t_role r
-        on ur.roleid =r.id
-        where u.name= #{username}
+        SELECT u.id uid,u.name,r.id,r.name rname FROM user u LEFT JOIN t_user_role ur ON u.userId =ur.userid
+        LEFT JOIN t_role r
+        ON ur.roleid =r.id
+        WHERE u.name= #{username}
     </select>
 
     <delete id="deleteUserByOwner" parameterType="String">
-        delete from user where userId =#{userId} and password =#{password}
+        DELETE FROM user WHERE userId =#{userId} AND password =#{password}
     </delete>
 
     <delete id="deleteUser" parameterType="String">
-        delete from user where name =#{username}
+        DELETE FROM user WHERE name =#{username}
     </delete>
 
     <update id="updateEmailStatus">
-        update email set status =#{status} where emailId =#{emailId}
+        UPDATE email SET status =#{status} WHERE emailId =#{emailId}
     </update>
 </mapper>

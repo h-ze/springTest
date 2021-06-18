@@ -12,23 +12,23 @@
     </resultMap>-->
 
     <insert id="save" parameterType="com.hz.demo.entity.User">
-        insert into user values (#{id},#{name},#{age},#{bir},#{password},#{salt},#{userId})
+        INSERT INTO user VALUES (#{id},#{name},#{age},#{bir},#{password},#{salt},#{userId})
     </insert>
 
     <insert id="addUserRoles" parameterType="com.hz.demo.entity.UserRoles">
-        insert into t_user_role values (#{id},#{userId},#{roleId})
+        INSERT INTO t_user_role VALUES (#{id},#{userId},#{roleId})
     </insert>
 
     <select id="findAll" resultType="com.hz.demo.entity.User">
-        select id,name,age,bir from user
+        SELECT id,name,age,bir FROM user
     </select>
 
     <select id="getUser" parameterType="com.hz.demo.entity.User" resultType="com.hz.demo.entity.User">
-        select id,name,age,bir,password,salt,userId from user where name = #{username}
+        SELECT id,name,age,bir,password,salt,userId FROM user WHERE name = #{username}
     </select>
 
     <select id="getUserById" parameterType="String" resultType="com.hz.demo.entity.User">
-        select id,name,age,bir,password,salt,userId from user where userId = #{userId}
+        SELECT id,name,age,bir,password,salt,userId FROM user WHERE userId = #{userId}
     </select>
 
     <resultMap id="userMap" type="com.hz.demo.entity.User">
@@ -41,21 +41,21 @@
         </collection>
     </resultMap>
     <select id="findRolesByUsername" parameterType="String" resultMap="userMap">
-        select u.id uid,u.name,r.id,r.name rname from user u left join t_user_role ur on u.userId =ur.userid
-        left join t_role r
-        on ur.roleid =r.id
-        where u.name= #{username}
+        SELECT u.id uid,u.name,r.id,r.name rname FROM user u LEFT JOIN t_user_role ur ON u.userId =ur.userid
+        LEFT JOIN t_role r
+        ON ur.roleid =r.id
+        WHERE u.name= #{username}
     </select>
 
     <delete id="deleteUserByOwner" parameterType="String">
-        delete from user where userId =#{userId} and password =#{password}
+        DELETE FROM user WHERE userId =#{userId} AND password =#{password}
     </delete>
 
     <delete id="deleteUser" parameterType="String">
-        delete from user where name =#{username}
+        DELETE FROM user WHERE name =#{username}
     </delete>
 
     <update id="updateUser" parameterType="com.hz.demo.entity.User">
-        update user set password =#{password} where userId =#{userId}
+        UPDATE user SET password =#{password} WHERE userId =#{userId}
     </update>
 </mapper>

@@ -2,18 +2,25 @@ package com.hz.exception;
 
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 异常处理逻辑
  */
 @RestControllerAdvice
+@Slf4j
 public class ExceptionController {
 
 
@@ -68,10 +75,25 @@ public class ExceptionController {
     public JSONObject handleException(HttpMessageNotReadableException e){
         JSONObject jsonObject = new JSONObject(true);
         jsonObject.put("code","999999");
-        jsonObject.put("msg","格式错误,请重新输入");
+        jsonObject.put("msg","格式错误,请检查格式是否完整或参数是否填写完成并重新输入");
         jsonObject.put("data","[]");
         return jsonObject;
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public JSONObject handleException(MethodArgumentNotValidException e){
+        log.info("异常: {}",e);
+        log.info("异常详情: {}",e.getBindingResult().getFieldError().getDefaultMessage());
+        List<String> list = e.getBindingResult().getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.toList());
+        log.info("异常集合: {}",list);
+        JSONObject jsonObject = new JSONObject(true);
+        jsonObject.put("code","999999");
+        jsonObject.put("msg","参数缺失,类型错误");
+        jsonObject.put("data",list);
+        return jsonObject;
+    }
 
 }

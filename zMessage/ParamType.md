@@ -48,3 +48,30 @@ maven的依赖调解有两大原则：路径最近者优先；第一声明者优
 @configuration和@component之间的区别
 @configuration和@component之间的区别是：@Component注解的范围最广，所有类都可以注解，但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
 一句话概括就是 @Configuration 中所有带 @Bean 注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例。使用Component时是不同的对象
+
+========================================================
+
+springboot 常用参数校验的注解
+注解 	        作用类型 	            解释
+@NotNull 	    任何类型 	            属性不能为null
+@NotEmpty 	    集合 	                集合不能为null，且size大于0
+@NotBlank 	    字符串、字符 	        字符类不能为null，且去掉空格之后长度大于0
+@AssertTrue 	Boolean、boolean 	    布尔属性必须是true
+@Min 	        数字类型（原子和包装） 	限定数字的最小值（整型）
+@Max 	        同@Min 	                限定数字的最大值（整型）
+@DecimalMin 	同@Min 	                限定数字的最小值（字符串，可以是小数）
+@DecimalMax 	同@Min 	                限定数字的最大值（字符串，可以是小数）
+@Range 	        数字类型（原子和包装） 	限定数字范围（长整型）
+@Length 	    字符串 	                限定字符串长度
+@Size 	        集合 	                限定集合大小
+@Past 	        时间、日期 	            必须是一个过去的时间或日期
+@Future 	    时期、时间 	            必须是一个未来的时间或日期
+@Email 	        字符串 	                必须是一个邮箱格式
+@Pattern 	    字符串、字符 	        正则匹配字符串
+
+==========================================================
+
+将一个微服务注册到Eureka Server
+使用@EnableDiscoveryClient 或@EnableEurekaClient
+
+从Spring Cloud Edgware开始，@EnableDiscoveryClient 或@EnableEurekaClient 可省略。只需加上相关依赖，并进行相应配置，即可将微服务注册到服务发现组件上。

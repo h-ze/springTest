@@ -7,7 +7,7 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://127.0.0.1:${server.port}/eureka/
+      defaultZone: http://${security.user.name}:${security.user.password}@127.0.0.1:${server.port}/eureka/
 
 management:
     health:
@@ -15,9 +15,14 @@ management:
         enabled: false
 spring:
   resources.static-locations: classpath:/templates/,classpath:/static/
+  security:
+    user:
+      password: ${REGISTRY_SERVER_PASSWORD:password}
+      name: user
 #  datasource:
 #      url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
 #      driver-class-name: com.mysql.cj.jdbc.Driver
 #      username: root
 #      password: root
 #      type: com.alibaba.druid.pool.DruidDataSource
+

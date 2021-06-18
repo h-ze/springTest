@@ -3,19 +3,19 @@
 <mapper namespace="com.hz.book.dao.BookDao">
 
     <insert id="addBook" parameterType="com.hz.demo.entity.Book">
-        insert into book values (#{bookId},#{bookName},#{createDate})
+        INSERT INTO book VALUES (#{bookId},#{bookName},#{createDate})
     </insert>
 
     <update id="updateBook" parameterType="com.hz.demo.entity.Book">
-        update book set bookName = #{bookName} where bookId =#{bookId}
+        UPDATE book SET bookName = #{bookName} WHERE bookId =#{bookId}
     </update>
 
     <select id="getBook" parameterType="String" resultType="com.hz.demo.entity.Book">
-        select bookId,bookName,createDate from book where bookId =#{bookId}
+        SELECT bookId,bookName,createDate FROM book WHERE bookId =#{bookId}
     </select>
 
     <delete id="deleteBook" parameterType="String">
-        delete from book where bookId = #{bookId}
+        DELETE FROM book WHERE bookId = #{bookId}
     </delete>
 
 </mapper>

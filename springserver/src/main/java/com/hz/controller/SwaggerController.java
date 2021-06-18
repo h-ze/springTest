@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * swagger测试地址
+ * restful应该是在地址栏后拼参数 类似 /{test1}/{test2}
  */
 @RestController
 //@Api(tags = "测试接口功能")

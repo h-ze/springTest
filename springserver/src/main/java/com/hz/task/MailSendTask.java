@@ -20,6 +20,8 @@ import java.util.List;
 
 @Component
 @Slf4j
+
+// rabbitmq的管理页面为 http://localhost:15672
 public class MailSendTask {
     /*@Autowired
     MailSendLogService mailSendLogService;

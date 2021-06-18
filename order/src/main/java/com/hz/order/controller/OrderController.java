@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 //RestTemplate调用
+//调用customer项目中的方法
 @RestController
 public class OrderController {
     @Autowired
@@ -14,8 +15,7 @@ public class OrderController {
 
     @GetMapping("/c/get/{id}")
     public String get(@PathVariable String id) {
-        String result = restTemplate.getForObject("http://customer:8762/get/"+id, String.class);
-        return result;
+        return restTemplate.getForObject("http://customer:8762/get/"+id, String.class);
     }
 
     @GetMapping("/show")
