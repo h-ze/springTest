@@ -27,20 +27,20 @@
         <result column="userId" property="userId" jdbcType="INTEGER" />
     </resultMap>-->
     <select id="findByUserId" parameterType="Integer" resultType="UserFile">
-        select id,oldFileName,newFileName,ext,path,size,type,isImg,downcounts,uploadTime,userId from files where userId=#{id}
+        SELECT id,oldFileName,newFileName,ext,path,size,type,isImg,downcounts,uploadTime,userId FROM files WHERE userId=#{id}
     </select>
 
     <insert id="savaFileMessage" parameterType="UserFile" useGeneratedKeys="true" keyProperty="id">
-        insert into files
-        values (#{id},#{oldFileName},#{newFileName},#{ext},#{path},#{size},#{type},#{isImg},#{downcounts},#{uploadTime},#{userId})
+        INSERT INTO files
+        VALUES (#{id},#{oldFileName},#{newFileName},#{ext},#{path},#{size},#{type},#{isImg},#{downcounts},#{uploadTime},#{userId})
     </insert>
 
     <select id="findFileById" parameterType="String" resultType="UserFile">
-        select id,oldFileName,newFileName,ext,path,size,type,isImg,downcounts,uploadTime,userId from files where id=#{id}
+        SELECT id,oldFileName,newFileName,ext,path,size,type,isImg,downcounts,uploadTime,userId FROM files WHERE id=#{id}
     </select>
 
     <update id="updateFile" parameterType="UserFile">
-        update files set downcounts =#{downcounts} where id=#{id}
+        UPDATE files SET downcounts =#{downcounts} WHERE id=#{id}
     </update>
 
 </mapper>

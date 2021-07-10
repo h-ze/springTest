@@ -12,8 +12,8 @@ spring:
     host: smtp.qq.com
     protocol: smtp
     default-encoding: UTF-8
-    #    password: fzvarxpndockbaeg
-    #    username: 1102211390@qq.com
+    password: kuwvhzyxkknujigi
+    username: 1102211390@qq.com
     port: 587
     properties:
       mail:
@@ -44,18 +44,18 @@ spring:
     host: localhost
     database: 0
 
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-    listener:
-      simple:
-        concurrency: 5
-        ## manual:??? ack??????
-        acknowledge-mode: manual
-        max-concurrency: 10
-        prefetch: 1
+  #rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+  listener:
+    simple:
+      concurrency: 5
+      ## manual:??? ack??????
+      acknowledge-mode: manual
+      max-concurrency: 10
+      prefetch: 1
 
 
 logging:
@@ -81,6 +81,11 @@ eureka:
       defaultZone: http://127.0.0.1:6890/eureka/
     healthcheck:
       enabled: true
+  instance:
+    instance-id: springbootemail-8084
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
 
 info:
   app.name: eureka

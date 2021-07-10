@@ -1,6 +1,7 @@
 package com.hz.config;
 
 import com.hz.demo.entity.MailConstants;
+import com.hz.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
@@ -23,6 +24,9 @@ public class RabbitConfig {
     //@Autowired
     //MailSendLogService mailSendLogService;
 
+    @Autowired
+    EmailService emailService;
+
     @Bean
     RabbitTemplate rabbitTemplate(CachingConnectionFactory cachingConnectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
@@ -35,6 +39,7 @@ public class RabbitConfig {
             String msgId = data.getId();
             if (ack) {
                 logger.info(msgId + ":消息发送成功");
+                emailService.updateEmailStatus(Integer.valueOf(msgId),1);
                 //mailSendLogService.updateMailSendLogStatus(msgId, 1);//修改数据库中的记录，消息投递成功
             } else {
                 logger.info(msgId + ":消息发送失败");
@@ -66,7 +71,7 @@ public class RabbitConfig {
     //绑定测试交换机和测试队列
     @Bean
     Binding mailBinding() {
-        return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_ROUTING_KEY_NAME);
+        return BindingBuilder.bind(mailQueue()).to(mailExchange()).with(MailConstants.MAIL_QUEUE_NAME);
     }
 
     @Bean

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -121,9 +122,9 @@ public class UserController {
             userRoles.setRoleId(type);
             int i = userService.save(addUser,userRoles);
             if (i >0){
-                return new ConvertResult(0,"注册成功","用户已注册成功");
+                return new ConvertResult(100000,"注册成功","用户已注册成功,请前往当前注册邮箱地址点击激活用户");
             }else {
-                return new ConvertResult(0,"注册失败","用户注册失败");
+                return new ConvertResult(999999,"注册失败","用户注册失败");
             }
         }
     }
@@ -314,14 +315,13 @@ public class UserController {
     @ApiOperation(value ="编辑用户个人信息",notes="用来编辑用户个人信息")
     @PostMapping("/edit")
     @ResponseBody
-    public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true) UserMessage userMessage){
+    public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true) @Validated UserMessage userMessage){
 
-        logger.info("用户信息:"+userMessage);
-        String fullName = userMessage.getFullName();
+        logger.info("用户信息: {}",userMessage);
+        /*String fullName = userMessage.getFullName();
         if (fullName ==null){
             return new ConvertResult(999999,"参数错误","fullName不能为空");
-        }
-        logger.info("用户信息："+fullName);
+        }*/
         return new ConvertResult(0,"修改成功","用户已修改");
     }
 
@@ -384,10 +384,15 @@ public class UserController {
             @ApiImplicitParam(name = "phone_number",value = "手机号",paramType = "query",dataType = "String",required = true)
     })
     @ResponseBody
-    public ConvertResult exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){
+    public ResponseResult<String> exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){
         logger.info("email:"+email);
         logger.info("phone_number:"+phone_number);
-        return new ConvertResult(0,"解绑成功","用户已解绑");
+        User user = userService.getUser(email);
+        logger.info("用户为: {}"+user);
+        if (user ==null ){
+            return new ResponseResult(999999,"用户不存在","查询成功");
+        }
+        return new ResponseResult(100000,"用户存在","查询成功");
     }
 
 }

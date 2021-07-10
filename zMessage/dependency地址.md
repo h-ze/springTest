@@ -1,0 +1,1 @@
+mvn install:install-file -DgroupId=cn.cpdf360 -DartifactId=fsdk -Dversion=1.0.1 -Dpackaging=jar -Dfile=C:/Users/Admin/Desktop/fsdk-6.1.jar

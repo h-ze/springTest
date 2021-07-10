@@ -1,0 +1,36 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        # 路由ID（一个路由配置一个ID）
+        - id: order-service
+
+          # 通过注册中心来查找服务（lb代表从注册中心获取服务，并且负载均衡）
+          uri: lb://order/
+
+          # 匹配到的以/api/customer/开头的路径都转发到order的服务，相当于访问 lb://ORDER/**
+          predicates:
+            - Path=/api/customer/**
+          # 去掉匹配到的路径的前2级 这里也就是 /api/customer
+          filters:
+            - StripPrefix=2
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:6890/eureka/
+  instance:
+    instance-id: gateway-9000
+    prefer-ip-address: true
+    # 每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+    lease-renewal-interval-in-seconds: 1
+    # 告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
+    lease-expiration-duration-in-seconds: 2

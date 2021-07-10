@@ -1,5 +1,6 @@
 package com.hz.email;
 
+import com.hz.demo.entity.Email;
 import com.hz.demo.entity.Employee;
 import com.hz.demo.entity.MailConstants;
 import com.rabbitmq.client.Channel;
@@ -48,6 +49,15 @@ public class MailReceiver {
     public void handler(Message message, Channel channel) throws IOException, MessagingException {
         log.info("message: ={}",message);
         log.info("channel: ={}",channel);
+        Email email = (Email) message.getPayload();
+        log.info("payload: ={}",email);
+        log.info("===========");
+        MessageHeaders headers = message.getHeaders();
+        Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
+        String msgId = (String) headers.get("spring_returned_message_correlation");
+        log.info("msgId: ={}",msgId);
+        log.info("tag: ={}",tag);
+        channel.basicAck(tag,false);
         //Employee employee = (Employee) message.getPayload();
         /*MessageHeaders headers = message.getHeaders();
         Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
@@ -58,30 +68,30 @@ public class MailReceiver {
             channel.basicAck(tag, false);//确认消息已消费
             return;
         }*/
-        //sendEmail(employee);
+        sendEmail(email);
     }
 
-    private void sendEmail(Employee employee) throws MessagingException, UnsupportedEncodingException {
+    private void sendEmail(Email email) throws MessagingException, UnsupportedEncodingException {
         //构造SMTP邮件服务器的基本环境
         Properties properties = new Properties();
         properties.setProperty("mail.host", "smtp.qq.com");
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.auth", "true");
         properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        properties.setProperty("mail.smtp.port", "465");
+        properties.setProperty("mail.smtp.port", "587");
         Session session = Session.getDefaultInstance(properties);
         session.setDebug(true);
 
         //构造邮件
 
         List<File> fileList = new ArrayList<>();
-        fileList.add(new File("C:\\Users\\Admin\\Desktop\\Phantom权限标志位整理.xlsx"));
+        //fileList.add(new File("C:\\Users\\Admin\\Desktop\\Phantom权限标志位整理.xlsx"));
 
         List<File> picList = new ArrayList<>();
-        picList.add(new File("C:\\Users\\Admin\\Desktop\\捕获.PNG"));
-        picList.add(new File("C:\\Users\\Admin\\Desktop\\捕获.PNG"));
+        //picList.add(new File("C:\\Users\\Admin\\Desktop\\捕获.PNG"));
+        //picList.add(new File("C:\\Users\\Admin\\Desktop\\捕获.PNG"));
 
-        MimeMessage mimeMessage = saveMessage(session,"1102211390@qq.com","1554752374@qq.com",null,"邮件主题",employee,fileList,picList);
+        MimeMessage mimeMessage = saveMessage(session,"1102211390@qq.com","1554752374@qq.com",null,"邮件主题",email,fileList,picList);
         //发送邮件
         Transport transport = session.getTransport();
         transport.connect("smtp.qq.com", "1102211390@qq.com", /*"iskpdrftnlgohbih",*/"kuwvhzyxkknujigi");
@@ -94,7 +104,7 @@ public class MailReceiver {
      * @param list 主体图片集合
      * @return
      */
-    private String setEmailContent(List<String> list,Employee employee){
+    private String setEmailContent(List<String> list,Email email){
         Context context = new Context();
         context.setVariable("name", "test");
         context.setVariable("posName", "test");
@@ -122,7 +132,7 @@ public class MailReceiver {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
-    private MimeMessage saveMessage(Session session,String fromEmail, String toEmail, String ccEmail, String subject,Employee employee,List<File> files,List<File> headPic) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage saveMessage(Session session,String fromEmail, String toEmail, String ccEmail, String subject,Email email,List<File> files,List<File> headPic) throws MessagingException, UnsupportedEncodingException {
         MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.addRecipients(javax.mail.Message.RecipientType.TO, toEmail);//设置收信人
         if (ccEmail!=null){
@@ -155,7 +165,7 @@ public class MailReceiver {
             bodyMimeMultipart.addBodyPart(picPart);
         }
 
-        bodyPart.setContent(setEmailContent(list,employee),"text/html;charset=utf-8");
+        bodyPart.setContent(setEmailContent(list,email),"text/html;charset=utf-8");
 
         //将正文的HTML和图片部分分别添加到bodyMimeMultipart中
         bodyMimeMultipart.addBodyPart(bodyPart);
@@ -176,35 +186,4 @@ public class MailReceiver {
         attach2.setFileName(MimeUtility.encodeText(file.getName()));//设置文件名时，如果有中文，可以通过MimeUtility类中的encodeText方法进行编码，避免乱码
     }
 
-    //收到消息，发送邮件
-        /*MimeMessage msg = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(msg);
-        try {
-            //helper.setTo(employee.getEmail());
-            helper.setTo("1554752374@qq.com");
-            helper.setFrom(mailProperties.getUsername());
-            helper.setSubject("入职欢迎");
-            helper.setSentDate(new Date());
-            Context context = new Context();
-            *//*context.setVariable("name", employee.getName());
-            context.setVariable("posName", employee.getPosition().getName());
-            context.setVariable("joblevelName", employee.getJobLevel().getName());
-            context.setVariable("departmentName", employee.getDepartment().getName());
-            *//*
-            context.setVariable("name", "test");
-            context.setVariable("posName", "test");
-            context.setVariable("joblevelName", "test");
-            context.setVariable("departmentName", "test");
-            context.setVariable("test","test");
-            String mail = templateEngine.process("mail", context);
-            helper.setText(mail, true);
-            javaMailSender.send(msg);
-            *//*redisTemplate.opsForHash().put("mail_log", msgId, "javaboy");
-            channel.basicAck(tag, false);
-            log.info(msgId + ":邮件发送成功");*//*
-        } catch (MessagingException e) {
-           *//* channel.basicNack(tag, false, true);
-            e.printStackTrace();
-            log.error("邮件发送失败：" + e.getMessage());*//*
-        }*/
 }

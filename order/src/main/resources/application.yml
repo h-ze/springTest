@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: order
+
+server:
+  port: 8763
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:6890/eureka/
+  instance:
+    instance-id: order-8763
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
