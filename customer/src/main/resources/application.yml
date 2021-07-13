@@ -1,4 +1,6 @@
 spring:
+  resources.static-locations: classpath:/templates/,classpath:/static/
+
   application:
     name: customer
 
@@ -8,9 +10,12 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:6890/eureka/
+      #defaultZone: http://localhost:6890/eureka/
+      defaultZone: http://user:password@localhost:6890/eureka
+      #defaultZone: http://${security.name}:${security.password}@127.0.0.1:6890/eureka/
   instance:
     instance-id: customer-8762
     prefer-ip-address: true
     lease-renewal-interval-in-seconds: 1
     lease-expiration-duration-in-seconds: 2
+

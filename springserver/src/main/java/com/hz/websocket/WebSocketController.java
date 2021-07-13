@@ -1,6 +1,7 @@
 package com.hz.websocket;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -96,6 +98,36 @@ public class WebSocketController {
             webSocketSet.get(name).session.getBasicRemote().sendText(message);
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 自定义发送信息
+     * @param message 发送的用户信息
+     * @param name 发送给的用户
+     */
+    public static void sendInfo(@PathParam("message") String message,@PathParam("name") String name) {
+        log.info("发送消息到:"+name+"，报文:"+message);
+        if(StringUtils.isNotBlank(name)&&webSocketSet.containsKey(name)){
+            webSocketSet.get(name).appointSending(name,message);
+        }else{
+            log.error("用户"+name+",不在线！");
+        }
+    }
+
+    /**
+     * 群发发送消息
+     * @param message 发送的消息内容
+     */
+    public static void sendInfoAll(@PathParam("message") String message) {
+        log.info("群发消息"+"，报文:"+message);
+        for (String name : webSocketSet.keySet()){
+            try {
+                webSocketSet.get(name).session.getBasicRemote().sendText(message);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

@@ -8,7 +8,8 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:6890/eureka/
+      #defaultZone: http://localhost:6890/eureka/
+      defaultZone: http://user:password@localhost:6890/eureka
   instance:
     instance-id: order-8763
     prefer-ip-address: true

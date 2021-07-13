@@ -14,6 +14,11 @@ spring:
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
 
+  security:
+    user:
+      password: ${REGISTRY_SERVER_PASSWORD:password}
+      name: user
+
 mybatis :
   mapper-locations: classpath:/com/hz/mapper/*.xml
   type-aliases-package: com.hz.demo.entity
@@ -31,9 +36,15 @@ eureka:
 #    hostname: localhost
   client:
     serviceUrl:
-      defaultZone: http://127.0.0.1:6890/eureka/
+      #defaultZone: http://127.0.0.1:6890/eureka/
+      defaultZone: http://user:password@localhost:6890/eureka
+      #defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@127.0.0.1:${server.port}/eureka/
+
     healthcheck:
       enabled: true
+
+    #registerWithEureka: false
+    #fetchRegistry: false
   instance:
     instance-id: springbootbook-8085
     prefer-ip-address: true

@@ -27,6 +27,7 @@ import java.util.Map;
 import static com.hz.config.BeanConfig.isOpenRedis;
 
 /**
+ * springboot整合shiro及jwt对用户的token进行认证判断
  * 用来整合shiro框架相关的配置项
  * shiro的filter
  */

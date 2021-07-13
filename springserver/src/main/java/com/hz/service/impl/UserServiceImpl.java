@@ -86,4 +86,9 @@ public class UserServiceImpl implements UserService {
         return userDAO.updateUser(user);
     }
 
+    @Override
+    public String createQrImg() {
+        return "111";
+    }
+
 }

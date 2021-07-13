@@ -2,18 +2,18 @@ package com.hz.controller;
 
 import com.hz.demo.entity.ResponseMessageWithoutException;
 import com.hz.test.MyClient;
+import com.hz.websocket.WebSocketController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.ContainerProvider;
 import javax.websocket.WebSocketContainer;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
 
@@ -28,6 +28,7 @@ import static com.hz.demo.entity.ResponseMessageWithoutException.successResult;
 @RequestMapping("index")
 @Slf4j
 public class indexController {
+
     /*@Autowired
     SimpMessagingTemplate simpMessagingTemplate;*/
 
@@ -43,6 +44,19 @@ public class indexController {
             e.printStackTrace();
             return errorResult(0,"测试websocket失败");
         }
+    }
+
+    /**
+     * 主动给websocket发送消息
+     * @param message 发送的消息
+     * @param token 用户的token
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/push")
+    public ResponseEntity<String> pushToWeb(@RequestParam String message, @RequestParam String token) throws IOException {
+        WebSocketController.sendInfo("测试发送","zhangsan");
+        return ResponseEntity.ok("MSG SEND SUCCESS");
     }
 
 }
