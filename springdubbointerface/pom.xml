@@ -6,12 +6,7 @@
         <groupId>org.example</groupId>
         <artifactId>springbootDemo</artifactId>
         <version>1.0-SNAPSHOT</version>
-<<<<<<< HEAD
-    </parent>
-
-=======
     </parent>-->
->>>>>>> e1674c560ed022b51bfa139a29cd38b8f4f35c07
     <groupId>com.hz</groupId>
     <artifactId>springdubbointerface</artifactId>
     <version>0.0.1-SNAPSHOT</version>

@@ -229,14 +229,35 @@
   </dependencies>
 
   <modules>
-    <module>springemails</module>
+
+    <!-- 整合springboot以及jwt以及shiro -->
     <module>springserver</module>
+
+    <!-- 测试eureka相关内容 -->
+    <module>springemails</module>
     <module>springentity</module>
     <module>springbook</module>
     <module>eureka</module>
+    <module>customer</module>
+    <module>eurekaconsumer</module>
+    <module>order</module>
+
+    <!-- 测试dubbo -->
     <module>springdubboprovider</module>
     <module>springdubboconsumer</module>
     <module>springdubbointerface</module>
+
+    <!--  springcloud -->
+    <module>authservice</module>
+    <module>config</module>
+    <module>gateway</module>
+    <module>monitor</module>
+    <module>zipkin</module>
+    <module></module>
+
+    <!-- 第三方预览 -->
+    <module>preview</module>
+    <module>office-plugin</module>
   </modules>
 
   <profiles>

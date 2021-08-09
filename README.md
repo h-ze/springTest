@@ -15,4 +15,33 @@ Nagios监控系统
 
 
 
+针对此电脑 mac 项目启动的要求
+首先需要启动 eureka项目
+该项目是为了启动eureka server
+然后分别启动不同的项目
+springserver项目中主要是使用了springboot以及shiro以及jwt整合了一套鉴权的系统
+其他的模块大致为springdubbocomsumer相关的三个模块是为了调试dubbo相关的内容，本系统中
+dubbo主要是使用了zookeeper来进行协调服务 
+其他模块例如mail book等模块是eureka的client模块 中间使用了restTemplate
+其他的模块包含springcloud内容
+
+redis相关操作
+cd /usr/local/redis-5.0.10/bin
+进入到bin目录后执行./redis-server启动redis
+然后新开一个黑窗口 同样进入bin目录后执行./redis-cli
+
+zookeeper相关操作
+zkServer start 启动zookeeper
+zkServer status 查看zookeeper状态
+zkCli 执行zookeeper具体操作
+zookeeper是个cp系统 讲究的是一致性 具体可以参考cap理论 （cap理论是分布式领域中存在的理论，该理论已被证实只能同时满足两个条件无法同时满足三个条件 即ap和cp）
+
+
+查看 RabbitMQ 状态
+systemctl status rabbitmq-server #Active: active (running) 说明处于运行状态
+# service rabbitmq-server status 用service指令也可以查看，同systemctl指令
+启动、停止、重启
+service rabbitmq-server start # 启动
+service rabbitmq-server stop # 停止
+service rabbitmq-server restart # 重启
 

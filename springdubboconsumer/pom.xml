@@ -2,21 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-<<<<<<< HEAD
-
-    <parent>
-        <groupId>org.example</groupId>
-        <artifactId>springbootDemo</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-
-=======
     <!--<parent>
         <groupId>org.example</groupId>
         <artifactId>springbootDemo</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>-->
->>>>>>> e1674c560ed022b51bfa139a29cd38b8f4f35c07
     <groupId>com.hz</groupId>
     <artifactId>springdubboconsumer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -105,30 +95,30 @@
             <artifactId>zkclient</artifactId>
             <version>0.10</version>
         </dependency>
-<!--
-        &lt;!&ndash; 实现对 Dubbo 的自动化配置 &ndash;&gt;
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>2.7.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>2.7.4.1</version>
-        </dependency>
+        <!--
+                &lt;!&ndash; 实现对 Dubbo 的自动化配置 &ndash;&gt;
+                <dependency>
+                    <groupId>org.apache.dubbo</groupId>
+                    <artifactId>dubbo</artifactId>
+                    <version>2.7.4.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.dubbo</groupId>
+                    <artifactId>dubbo-spring-boot-starter</artifactId>
+                    <version>2.7.4.1</version>
+                </dependency>
 
-        &lt;!&ndash; 使用 Zookeeper 作为注册中心 &ndash;&gt;
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>2.13.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>2.13.0</version>
-        </dependency>-->
+                &lt;!&ndash; 使用 Zookeeper 作为注册中心 &ndash;&gt;
+                <dependency>
+                    <groupId>org.apache.curator</groupId>
+                    <artifactId>curator-framework</artifactId>
+                    <version>2.13.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.curator</groupId>
+                    <artifactId>curator-recipes</artifactId>
+                    <version>2.13.0</version>
+                </dependency>-->
     </dependencies>
 
     <build>
