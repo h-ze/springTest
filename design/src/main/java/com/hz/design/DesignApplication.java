@@ -3,6 +3,9 @@ package com.hz.design;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * 设计模式
+ */
 @SpringBootApplication
 public class DesignApplication {
 

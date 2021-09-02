@@ -8,7 +8,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
- * 测试openfeign
+ * 测试openfeign 主要测试内容为indexController中的方法提供给springemails中的indexController类使用
  */
 //@SpringBootApplication
 @EnableDiscoveryClient

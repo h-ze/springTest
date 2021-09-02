@@ -5,12 +5,13 @@ git pull origin heze 从heze分支上往下拉代码
 git push origin heze 上传到heze分支上
 git log 查看日志记录
 git branch 查看分支
+git branch -D 删除某一个分支
 git checkout -b 分支  创建分支并切换到该分支（）
 
 git checkout -b local origin/WUYINGYUN 创建分支并切换到该分支并拉取远端分支的代码
 
 
-git merge 分支 merge某个分支到当前分支
+git merge 分支   merge某个分支到当前分支
 
 有时候，进行了错误的提交，但是还没有push到远程分支，想要撤销本次提交，可以使用git reset –-soft/hard命令
 git reset 版本号（至少6位）
