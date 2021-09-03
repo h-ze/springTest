@@ -16,16 +16,16 @@ public class ConvertResult implements Serializable {
     private String message;
 
     @ApiModelProperty(value = "结果")
-    private Object result;
+    private Object data;
 
 
     public ConvertResult() {
     }
 
-    public ConvertResult(Integer code, String message, Object result) {
+    public ConvertResult(Integer code, String message, Object data) {
         this.code = code;
         this.message = message;
-        this.result = result;
+        this.data = data;
     }
 
     public Integer getCode() {
@@ -44,12 +44,12 @@ public class ConvertResult implements Serializable {
         this.message = message;
     }
 
-    public Object getResult() {
-        return result;
+    public Object getData() {
+        return data;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ConvertResult implements Serializable {
         return "ConvertResult{" +
                 "code=" + code +
                 ", message='" + message + '\'' +
-                ", result='" + result + '\'' +
+                ", data='" + data + '\'' +
                 '}';
     }
 }

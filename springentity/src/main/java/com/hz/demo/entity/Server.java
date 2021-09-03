@@ -14,6 +14,11 @@ public class Server {
     private String port;
     private String proxyUser;
     private String proxyPass;
+    private boolean trust;
+
+    public boolean isTrust() {
+        return trust;
+    }
 
     public Server() {
     }
