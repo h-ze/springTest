@@ -4,8 +4,8 @@ server :
 
 spring:
   profiles.active: "@profileActive@"
-  application:
-    name: server
+#  application:
+#    name: server
 #  mail:
 #    host: smtp.qq.com
 #    protocol: smtp

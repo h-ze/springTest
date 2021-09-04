@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -83,7 +84,7 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public JSONObject handleException(MethodArgumentNotValidException e){
         log.info("异常: {}",e);
-        log.info("异常详情: {}",e.getBindingResult().getFieldError().getDefaultMessage());
+        log.info("异常详情: {}", Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
         List<String> list = e.getBindingResult().getAllErrors()
                 .stream()
                 .map(ObjectError::getDefaultMessage)

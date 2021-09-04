@@ -11,7 +11,6 @@ import java.util.Date;
 /**
  * 控制器支持类
  *
- * @author Guoqing
  */
 public abstract class BaseController {
 
