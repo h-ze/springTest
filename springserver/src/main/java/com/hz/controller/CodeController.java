@@ -1,7 +1,9 @@
 package com.hz.controller;
 
 import cn.hutool.extra.qrcode.QrCodeUtil;
+import com.hz.ints.AccessLimit;
 import com.hz.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +20,18 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("code")
+@Slf4j
 public class CodeController {
 
     @Autowired
     private UserService userService;
 
+    /**
+     * 生成二维码
+     * @param request
+     * @param response
+     */
+    @AccessLimit(seconds = 5, maxCount = 5, needLogin = false)
     @GetMapping(value = "/getLoginQr")
     public void createCodeImg(HttpServletRequest request, HttpServletResponse response){
         response.setHeader("Pragma","No-cache");
@@ -31,8 +40,8 @@ public class CodeController {
         response.setDateHeader("Expires",0);
         response.setContentType("image/jpeg");
 
-        //String uuid = userService.createQrImg();
-        String uuid = UUID.randomUUID().toString();
+        String uuid = userService.createQrImg();
+        log.info(uuid);
         response.setHeader("uuid",uuid);
 
         try {

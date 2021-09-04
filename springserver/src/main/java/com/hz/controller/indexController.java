@@ -33,11 +33,11 @@ public class indexController {
     SimpMessagingTemplate simpMessagingTemplate;*/
 
     @PostMapping("/sendMessage")
-    public ResponseMessageWithoutException<String> sendMessage(@RequestParam String message, @RequestParam String token){
+    public ResponseMessageWithoutException<String> sendMessage(@RequestParam String message, @RequestParam String username,@RequestParam String token){
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             MyClient client = new MyClient();
-            container.connectToServer(client, new URI("ws://localhost:8082/springboot/websocket/zhangsan?token="+token));
+            container.connectToServer(client, new URI("ws://localhost:8082/springboot/websocket/"+username+"?token="+token));
             client.send("客户端发送消息:" + message);
             return successResult(0,"发送成功","测试websocket成功");
         }catch (Exception e){
@@ -55,7 +55,7 @@ public class indexController {
      */
     @PostMapping("/push")
     public ResponseEntity<String> pushToWeb(@RequestParam String message, @RequestParam String token) throws IOException {
-        WebSocketController.sendInfo("测试发送","zhangsan");
+        WebSocketController.sendInfo(message,"zhangsan");
         return ResponseEntity.ok("MSG SEND SUCCESS");
     }
 

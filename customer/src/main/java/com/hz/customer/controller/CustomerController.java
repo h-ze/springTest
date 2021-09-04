@@ -14,7 +14,7 @@ public class CustomerController {
      */
     @GetMapping("/get/{id}")
     public String get(@PathVariable String id){
-        return "xieong"+id;
+        return "查询成功,订单号为"+id;
     }
 
     @GetMapping("/show")

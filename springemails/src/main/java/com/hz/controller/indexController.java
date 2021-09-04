@@ -14,7 +14,7 @@ public class indexController {
     @Autowired
     private Client client;
 
-    // 这里配置的是我们要调用的服务实例名，我们要调用USER服务，因此这里的地址是USER
+    // 这里配置的是我们要调用的服务实例名，我们要调用springbook中的服务，因此这里的地址是springbook
     private String rest_url_prefix = "http://127.0.0.1:8085/springbootbook/test1/test1";
 
     @Autowired

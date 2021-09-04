@@ -3,8 +3,9 @@ server :
   servlet.context-path : /springboot
 
 spring:
-  profiles.active: @profileActive@
-
+  profiles.active: "@profileActive@"
+#  application:
+#    name: server
 #  mail:
 #    host: smtp.qq.com
 #    protocol: smtp
@@ -57,4 +58,17 @@ logging:
     com.hz.dao: debug
 
     eureka.client.healthcheck.enabled: false
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://localhost:6890/eureka/
+      defaultZone: http://user:password@localhost:6890/eureka
+  instance:
+    instance-id: server-8080
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
 

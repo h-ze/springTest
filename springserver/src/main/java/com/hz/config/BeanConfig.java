@@ -1,8 +1,10 @@
 package com.hz.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +35,12 @@ public class BeanConfig {
         SimpleDateFormat sd  = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return sd.format(new Date());
     }*/
+
+    @Bean
+    @LoadBalanced
+    RestTemplate restTemplate () {
+        return new RestTemplate();
+    }
 
     public static Boolean isOpenRedis(){
         return false;

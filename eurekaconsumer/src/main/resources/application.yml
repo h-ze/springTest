@@ -54,8 +54,8 @@ info:
   company:
     name: hz
   build:
-    artifactId: @project.artifactId@
-    version: @project.version@
+    artifactId: "@project.artifactId@"
+    version: "@project.version@"
 
 feign:
   hystrix:

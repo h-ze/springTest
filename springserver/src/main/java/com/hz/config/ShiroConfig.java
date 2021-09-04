@@ -101,6 +101,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/unauthorized/**", "anon");
         //filterChainDefinitionMap.put("/websocket/","anon");
 
+        filterChainDefinitionMap.put("/code/getLoginQr","anon");
         //默认认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/user/testRoles");
         shiroFilterFactoryBean.setLoginUrl("/login"); // 首页get方式authc.loginUrl = /login

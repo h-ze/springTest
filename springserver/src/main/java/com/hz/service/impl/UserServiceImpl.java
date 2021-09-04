@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service("userService")
 @Transactional
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String createQrImg() {
-        return "111";
+        return UUID.randomUUID().toString().replace("-","").trim();
     }
 
 }
