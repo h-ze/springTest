@@ -49,3 +49,7 @@ service rabbitmq-server start # 启动
 service rabbitmq-server stop # 停止
 service rabbitmq-server restart # 重启
 
+使用mq，首先得启动rabbitMQ 服务
+1、 cd /usr/local/sbin
+2 、sudo ./rabbitmq-server
+
