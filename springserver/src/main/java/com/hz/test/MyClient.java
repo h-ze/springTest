@@ -5,6 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.*;
 
+
+/**
+ * 测试websocket收到消息
+ */
 @ClientEndpoint
 public class MyClient {
     private static Logger logger = LoggerFactory.getLogger(MyClient.class);

@@ -117,9 +117,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             }
         }
 
+        JWTToken jwtToken = new JWTToken(token);
 
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-        JWTToken jwtToken = new JWTToken(token);
         //UsernamePasswordToken jwtToken = new UsernamePasswordToken("test","123456");
         getSubject(request, response).login(jwtToken);
         return true;
@@ -199,8 +199,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             logger.info("刷新reids里的token过期时间");
             logger.info(compact);
         }
-
     }
-
 
 }

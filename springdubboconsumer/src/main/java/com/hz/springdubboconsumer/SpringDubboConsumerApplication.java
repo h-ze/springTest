@@ -26,7 +26,7 @@ public class SpringDubboConsumerApplication {
 
         private final Logger logger = LoggerFactory.getLogger(getClass());
 
-        @Reference(/*url = "dubbo://localhost:20882",*/version = "${dubbo.consumer.UserInterface.version}")
+        @Reference(/*url = "dubbo://localhost:20882",*/version = "${dubbo.consumer.UserInterfaces.version}")
         private UserService userRpcService;
 
         @Override

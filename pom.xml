@@ -85,7 +85,6 @@
   </dependencyManagement>
 
 
-
   <dependencies>
     <!-- web-->
     <dependency>
@@ -169,7 +168,6 @@
       <scope>test</scope>
     </dependency>
 
-
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -217,6 +215,13 @@
       <groupId>io.dubbo.springboot</groupId>
       <artifactId>spring-boot-starter-dubbo</artifactId>
       <version>1.0.0</version>
+    </dependency>
+
+    <!-- hutool java工具类包-->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>5.7.3</version>
     </dependency>
 
     <!-- 用在springboot2.2x以后  当前版本2.1-->

@@ -25,4 +25,5 @@ public interface UserService {
 
     int updateUserPassword(User user);
 
+    String createQrImg();
 }

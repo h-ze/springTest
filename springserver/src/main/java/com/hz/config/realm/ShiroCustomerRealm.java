@@ -91,6 +91,7 @@ public class ShiroCustomerRealm extends AuthorizingRealm {
             throw new AuthenticationException("该用户已被封号！");
         }*/
 
+        //这里应该做缓存处理
         UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         logger.info("userService:"+userService);
         User user = userService.getUser(username);
