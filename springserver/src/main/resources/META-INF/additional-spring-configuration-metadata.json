@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.service-registry.auto-registration.enabled",
+      "type": "java.lang.String",
+      "description": "Description for spring.cloud.service-registry.auto-registration.enabled."
+  }
+] }

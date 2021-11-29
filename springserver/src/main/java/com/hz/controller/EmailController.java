@@ -16,18 +16,18 @@ public class EmailController {
     EmailService emailService;
 
     @PostMapping
-    public ResponseResult resendEmail(String email){
+    public ResponseResult<String> resendEmail(String email){
         Email emailById = emailService.getEmail(email);
         int i;
         if (emailById.getStatus() !=0){
-            i = emailService.updateEmailStatus(emailById.getEmailId(), 2);
+            i = emailService.updateEmailStatus(emailById, 2);
         }else {
-            return new ResponseResult(100001,"账号已激活,无需再次激活","激活成功");
+            return new ResponseResult<>(100001, "账号已激活,无需再次激活", "激活成功");
         }
         if (i>0){
-            return new ResponseResult(100000,"邮件已重新发送,请稍后","发送成功");
+            return new ResponseResult<>(100000,"邮件已重新发送,请稍后","发送成功");
         }
-        return new ResponseResult(100000,"邮件发送失败,请重新发送","发送失败");
+        return new ResponseResult<>(100000,"邮件发送失败,请重新发送","发送失败");
     }
 
 }

@@ -231,6 +231,9 @@
       <version>5.5.0</version>
       <scope>test</scope>
     </dependency>-->
+
+
+
   </dependencies>
 
   <modules>
@@ -258,10 +261,8 @@
     <module>gateway</module>
     <module>monitor</module>
     <module>zipkin</module>
-    <module></module>
 
     <!-- 第三方预览 -->
-    <module>preview</module>
     <module>office-plugin</module>
   </modules>
 
@@ -316,29 +317,50 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.8.2</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.2</version>
+          <configuration>
+            <skipTests>true</skipTests>    <!--默认关掉单元测试 -->
+          </configuration>
+        </plugin>
+
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <!-- 增加jvm参数-->
-          <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
-          <!-- 指定入口类-->
-          <mainClass>com.heze.Application</mainClass>
-        </configuration>
-        <version>2.3.3.RELEASE</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>8</source>
-          <target>8</target>
-        </configuration>
-      </plugin>
-    </plugins>
+
+
+
+<!--      <plugin>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <fork>true</fork>-->
+<!--          &lt;!&ndash; 增加jvm参数&ndash;&gt;-->
+<!--          <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>-->
+<!--          &lt;!&ndash; 指定入口类&ndash;&gt;-->
+<!--          <mainClass>com.heze.Application</mainClass>-->
+<!--        </configuration>-->
+<!--        <version>2.3.3.RELEASE</version>-->
+<!--      </plugin>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-compiler-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <source>8</source>-->
+<!--          <target>8</target>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
+
   </build>
 </project>

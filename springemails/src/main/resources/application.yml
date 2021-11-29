@@ -29,10 +29,10 @@ spring:
 
   resources.static-locations: classpath:/templates/,classpath:/static/
   datasource:
-    url: jdbc:mysql://localhost:3306/sm?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT
+    url: jdbc:mysql://8.142.46.67:3306/springboot?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
 
   servlet:
@@ -44,11 +44,16 @@ spring:
     host: localhost
     database: 0
 
-  #rabbitmq:
-#    host: 127.0.0.1
-#    port: 5672
-#    username: guest
-#    password: guest
+  rabbitmq:
+    addresses: 8.142.46.67:5672
+    username: hz
+    password: 123456
+    virtual-host: /
+    publisher-confirms: true
+    publisher-returns: true
+    template:
+      mandatory: true
+
   listener:
     simple:
       concurrency: 5
@@ -81,7 +86,7 @@ eureka:
       #defaultZone: http://127.0.0.1:6890/eureka/
       defaultZone: http://user:password@localhost:6890/eureka
     healthcheck:
-      enabled: true
+      enabled: false
   instance:
     instance-id: springbootemail-8084
     prefer-ip-address: true

@@ -1,4 +1,4 @@
-package com.hz.email;
+package com.hz.task;
 
 import com.hz.demo.entity.Email;
 import com.hz.demo.entity.MailConstants;
@@ -70,7 +70,7 @@ public class MailReceiver {
             channel.basicAck(tag, false);//确认消息已消费
             return;
         }*/
-        sendEmail(email);
+        //sendEmail(email);
     }
 
     private void sendEmail(Email email) throws MessagingException, UnsupportedEncodingException {

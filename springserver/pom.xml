@@ -101,10 +101,12 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>-->
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-        </dependency>
+
+        <!-- springcloud -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
         <dependency>
@@ -113,8 +115,53 @@
             <version>3.3.0</version>
         </dependency>
 
+        <!-- 引入mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     </dependencies>
+
+
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <fork>true</fork>-->
+<!--                    &lt;!&ndash; 增加jvm参数&ndash;&gt;-->
+<!--                    <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>-->
+<!--                    &lt;!&ndash; 指定入口类&ndash;&gt;-->
+<!--                    <mainClass>com.heze.Application</mainClass>-->
+<!--                </configuration>-->
+<!--                <version>2.3.3.RELEASE</version>-->
+<!--            </plugin>-->
+
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+
 
     <build>
         <plugins>
@@ -126,14 +173,16 @@
                     <!-- 增加jvm参数-->
                     <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
                     <!-- 指定入口类-->
-                    <mainClass>com.heze.Application</mainClass>
+                    <mainClass>com.hz.ServerApplication</mainClass>
                 </configuration>
                 <version>2.3.3.RELEASE</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

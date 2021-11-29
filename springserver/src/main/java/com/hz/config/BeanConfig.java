@@ -1,14 +1,11 @@
 package com.hz.config;
 
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,12 +34,14 @@ public class BeanConfig {
     }*/
 
     @Bean
-    @LoadBalanced
+
+    //@LoadBalanced
+    //此注解用来做负载均衡 需要放开pom文件中关于springcloud的依赖
     RestTemplate restTemplate () {
         return new RestTemplate();
     }
 
     public static Boolean isOpenRedis(){
-        return false;
+        return true;
     }
 }

@@ -8,7 +8,7 @@ public interface EmailService {
 
     List<Email> getUnactivatedEmails(int status);
 
-    int updateEmailStatus(Integer emailId,int status);
+    int updateEmailStatus(Email email,int status);
 
     Email getEmail(String email);
 }

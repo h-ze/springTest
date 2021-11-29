@@ -50,7 +50,7 @@
         DELETE FROM user WHERE name =#{username}
     </delete>
 
-    <update id="updateEmailStatus">
-        UPDATE email SET status =#{status} WHERE emailId =#{emailId}
+    <update id="updateEmailStatus" parameterType="com.hz.demo.entity.Email">
+        UPDATE email SET status = #{status} WHERE emailId =#{emailId}
     </update>
 </mapper>

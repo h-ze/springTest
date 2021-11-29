@@ -2,13 +2,10 @@ package com.hz;
 
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 //测试类在Test下的包名和java下的包名需要一致 否则会报错 例如 main下的包名叫com.hz test下的包名也应该叫com.hz
 //@RunWith(SpringRunner.class)
 @SpringBootTest(classes = ServerApplication.class)
@@ -27,11 +24,11 @@ public class ApplicationTests {
 //                .withExpiresAt(instance.getTime())
 //                .sign(Algorithm.HMAC256("123"));
 //        System.out.println(token);
-        try {
-            System.out.println("获取的数据库连接为:"+dataSource.getConnection());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println("获取的数据库连接为:"+dataSource.getConnection());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

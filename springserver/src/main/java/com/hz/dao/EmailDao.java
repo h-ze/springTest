@@ -12,6 +12,6 @@ public interface EmailDao {
 
     List<Email> getEmailList(int status);
 
-    int updateEmailStatus(int emailId,int status);
+    int updateEmailStatus(Email email);
 
 }

@@ -1,11 +1,8 @@
 package com.hz.task;
 
 import com.hz.config.BeanConfig;
-
 import com.hz.demo.entity.Email;
-import com.hz.demo.entity.Employee;
 import com.hz.demo.entity.MailConstants;
-import com.hz.demo.entity.User;
 import com.hz.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -15,8 +12,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -50,9 +48,21 @@ public class MailSendTask {
 
         //Employee employee = new Employee();
 
+
+        String messageId = String.valueOf(UUID.randomUUID());
+        String messageData = "message: lonelyDirectExchange test message";
+        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageId", messageId);
+        map.put("messageData", messageData);
+        map.put("createTime", createTime);
+        //rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME, map);
+
         List<Email> unactivatedEmails = emailService.getUnactivatedEmails(2);
         unactivatedEmails.forEach(email -> rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME,email, new CorrelationData(String.valueOf(email.getEmailId()))));
         log.info("消息列表: {}",unactivatedEmails);
+
+
 
 
         //rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME,new User(), new CorrelationData("1"));

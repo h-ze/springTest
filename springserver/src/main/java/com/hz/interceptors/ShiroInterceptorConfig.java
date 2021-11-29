@@ -3,7 +3,7 @@ package com.hz.interceptors;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.hz.config.realm.ShiroCustomerRealm;
+import com.hz.config.shiro.ShiroCustomerRealm;
 import com.hz.utils.ApplicationContextUtils;
 import com.hz.utils.JWTUtil;
 import io.jsonwebtoken.Claims;

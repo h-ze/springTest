@@ -14,6 +14,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,7 @@ import static com.hz.config.BeanConfig.isOpenRedis;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -48,13 +49,15 @@ public class UserController {
 
     @Autowired
     private HttpsUtils httpsUtils;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     //@ResponseBody
     @GetMapping("/findAll")
     public String getAll(Model model){
         List<User> all = userService.findAll();
         model.addAttribute("users", all);
-        logger.info("info信息");
+        log.info("info信息");
         return "showAll";
     }
 
@@ -100,8 +103,18 @@ public class UserController {
     @PostMapping(value = "/user")
     @ResponseBody
     public ConvertResult registerUser(String username , @RequestParam("password") String password, @RequestParam("type") Integer type){
-        logger.info(username);
-        logger.info(password);
+
+//        String messageId = String.valueOf(UUID.randomUUID());
+//        String messageData = "message: lonelyDirectExchange test message";
+//        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("messageId", messageId);
+//        map.put("messageData", messageData);
+//        map.put("createTime", createTime);
+//        rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_QUEUE_NAME, map);
+
+        log.info(username);
+        log.info(password);
         User user = userService.getUser(username);
         if (user!=null){
             return new ConvertResult(0,"添加失败","用户已存在");
@@ -116,7 +129,7 @@ public class UserController {
             long l = System.currentTimeMillis();
             String userId = String.valueOf(l);
             addUser.setUserId(userId);
-            logger.info("id:"+userId);
+            log.info("id:"+userId);
             UserRoles userRoles = new UserRoles();
             userRoles.setUserId(userId);
             userRoles.setRoleId(type);
@@ -146,20 +159,20 @@ public class UserController {
     //@RequestPart
     @ResponseBody
     public ConvertResult login(@RequestParam("username") String username , @RequestParam("password")String password){
-        logger.info(username);
-        logger.info(password);
+        log.info(username);
+        log.info(password);
         User user = userService.getUser(username);
         if (user!=null){
             String sha = SaltUtil.shiroSha(password ,user.getSalt());
-            logger.info(sha);
+            log.info(sha);
             if (sha.equals(user.getPassword())){
                 String token = jwtUtil.createJWT(user.getId().toString(),
                         user.getName(),user.getUserId(), user.getSalt());
-                logger.info(token);
+                log.info(token);
                 if (isOpenRedis()){
                     //将登录的token存储到redis中
                     boolean setRedisExpire = redisUtil.setRedisExpire(token, 600);
-                    logger.info("结果:",setRedisExpire);
+                    log.info("结果:",setRedisExpire);
                 }
                 return new ConvertResult(0,"登录成功",token);
             }else {
@@ -180,10 +193,10 @@ public class UserController {
     public ConvertResult logout() {
         Subject subject = SecurityUtils.getSubject();
         String subjectPrincipal = (String) subject.getPrincipal();
-        logger.info("退出登录前的token:"+subjectPrincipal);
+        log.info("退出登录前的token:"+subjectPrincipal);
         subject.logout();
         String principal = (String)subject.getPrincipal();
-        logger.info("退出登录的token:"+principal);
+        log.info("退出登录的token:"+principal);
 
         //需要删除redis里的关于登录的key
 
@@ -214,14 +227,14 @@ public class UserController {
             return new ConvertResult(0,"删除失败","用户不存在");
         }
         String sha = SaltUtil.shiroSha(password ,user.getSalt());
-        logger.info(sha);
+        log.info(sha);
         if (sha.equals(user.getPassword())){
             int i = userService.deleteUser(user.getUserId(), sha);
             if (i >0){
                 if (isOpenRedis()){
                     //将redis中的信息删除
                     boolean setRedisExpire = redisUtil.deleteRedisExpire(userId);
-                    logger.info("结果:",setRedisExpire);
+                    log.info("结果:",setRedisExpire);
                 }
                 return new ConvertResult(0,"注销成功,如需帐号请重新注册","");
             }else {
@@ -254,7 +267,7 @@ public class UserController {
             return new ConvertResult(0,"修改密码失败","用户不存在");
         }
         String sha = SaltUtil.shiroSha(password ,user.getSalt());
-        logger.info(sha);
+        log.info(sha);
         if (sha.equals(user.getPassword())){
             Map<String, String> result = SaltUtil.shiroSalt(newPassword);
             user.setSalt(result.get("salt"));
@@ -317,7 +330,7 @@ public class UserController {
     @ResponseBody
     public ConvertResult updateUserMessage(@RequestBody() @ApiParam(name = "body",value = "用户个人信息",required = true) @Validated UserMessage userMessage){
 
-        logger.info("用户信息: {}",userMessage);
+        log.info("用户信息: {}",userMessage);
         /*String fullName = userMessage.getFullName();
         if (fullName ==null){
             return new ConvertResult(999999,"参数错误","fullName不能为空");
@@ -351,7 +364,7 @@ public class UserController {
             @ApiImplicitParam(name = "email",value = "用户邮箱",paramType = "query",dataType = "String",required = true)
     })
     public ConvertResult resetPassword(String email){
-        logger.info("用户邮箱:"+email);
+        log.info("用户邮箱:"+email);
         return new ConvertResult(0,"重置成功","密码已重置,请前往邮箱点击重置链接生效重置操作");
     }
 
@@ -367,7 +380,7 @@ public class UserController {
     })
     @ResponseBody
     public ConvertResult unbind(@RequestParam String type){
-        logger.info("type:"+type);
+        log.info("type:"+type);
         return new ConvertResult(0,"解绑成功","用户已解绑");
     }
 
@@ -385,10 +398,10 @@ public class UserController {
     })
     @ResponseBody
     public ResponseResult<String> exists(@RequestParam("email") String email,@RequestParam("phone_number") String phone_number){
-        logger.info("email:"+email);
-        logger.info("phone_number:"+phone_number);
+        log.info("email:"+email);
+        log.info("phone_number:"+phone_number);
         User user = userService.getUser(email);
-        logger.info("用户为: {}"+user);
+        log.info("用户为: {}"+user);
         if (user ==null ){
             return new ResponseResult(999999,"用户不存在","查询成功");
         }

@@ -24,8 +24,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public int updateEmailStatus(Integer emailId,int status) {
-        return emailDao.updateEmailStatus(emailId, status);
+    public int updateEmailStatus(Email email,int status) {
+        email.setStatus(status);
+        return emailDao.updateEmailStatus(email);
     }
 
     @Override
